@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Atalaia Booth</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="nuvem.css">
+<meta name="robots" content="noindex">
+</head>
+<body>
+<!-- ===================== tela de espera / tela do convidado (home.js) ===================== -->
+<section class="home" id="home">
+  <canvas class="home-bg" id="homeBg" aria-hidden="true"></canvas>
+  <div class="home-icons" id="homeIcons" aria-hidden="true"></div>
+  <header class="home-top">
+    <button class="home-btn" id="homeMenu" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h16"/></svg></button>
+    <div class="home-clock"><em id="homeEvName"></em><b id="homeClock"></b><span id="homeDate"></span></div>
+    <div class="home-right">
+      <button class="home-btn home-back" id="homeBackEv" hidden title="Voltar para a tela do evento ativo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M10 13.5l4 2-4 2z" fill="currentColor"/></svg><span>Voltar ao evento</span></button>
+      <button class="home-btn" id="homeFull" title="Tela cheia (F11)" aria-label="Tela cheia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+    </div>
+  </header>
+  <p class="home-evinfo" id="homeEvInfo" hidden></p>
+  <div class="home-idle">
+    <img class="home-logo" src="img/logo-horizontal.svg" alt="">
+    <aside class="home-qr">
+      <div class="qr" id="homeQr"></div>
+      <b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12a8 8 0 01-11.6 7.1L4 20l1-4A8 8 0 1120 12z"/></svg>Fale com a gente</b>
+      <span>Aponte a câmera do celular</span>
+      <em id="homeQrPhone"></em>
+      <div class="home-insta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg><span data-brand="instagram">@visualize360.rec</span></div>
+    </aside>
+  </div>
+  <div class="home-guest">
+    <div class="home-camwrap">
+      <div class="waves" aria-hidden="true"><i></i><i></i><i></i></div>
+      <img class="home-cam" src="img/logo-camera.svg" alt="">
+      <!-- obturador dentro da lente: mesmo viewBox do desenho da câmera -->
+      <svg class="home-lens" viewBox="38.54 10.62 608 458.93" aria-hidden="true">
+        <defs><clipPath id="lensClip"><circle cx="412.8" cy="260.6" r="110"/></clipPath></defs>
+        <g id="lensBlades" clip-path="url(#lensClip)"></g>
+      </svg>
+    </div>
+    <div class="home-phrase"><p id="homePhrase"></p></div>
+    <aside class="home-mini"><div class="qr" id="homeQrMini"></div><span data-brand="instagram">@visualize360.rec</span></aside>
+    <p class="home-evcount" id="homeEvCount"></p>
+    <button class="home-gal" id="homeGallery" title="Ver e imprimir de novo as fotos da festa"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="13" height="15" rx="1"/><path d="M8 5V3h13v15h-2"/><path d="M3 16l4-4 3 3 2-2 4 4"/><circle cx="12" cy="9.5" r="1.3"/></svg></i><span>Galeria</span></button>
+  </div>
+  <!-- galeria do evento (gallery.js) -->
+  <div class="gallery-view" id="galleryView" hidden>
+    <header class="gal-head"><div><b>Galeria</b><span id="galEvent"></span></div>
+      <button class="run-cancel" id="galClose" title="Voltar" aria-label="Fechar a galeria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></header>
+    <div class="gal-grid" id="galGrid"></div>
+    <p class="gal-empty" id="galEmpty" hidden>Ainda não há fotos desta festa.</p>
+    <div class="gal-detail" id="galDetail" hidden>
+      <img id="galImg" alt="">
+      <div class="gal-side">
+        <div id="galPrintRow">
+          <p>Quantas cópias?</p>
+          <div class="gal-copies"><button id="galMinus" aria-label="Menos">−</button><b id="galCopies">1</b><button id="galPlus" aria-label="Mais">+</button></div>
+          <button class="run-btn" id="galPrint">Imprimir</button>
+        </div>
+        <button class="run-btn ghost" id="galBack">Voltar</button>
+        <button class="gal-del" id="galDelete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Apagar da galeria</button>
+      </div>
+    </div>
+  </div>
+  <!-- painel do evento InstaPrint (instaprint.js): aprovar, ajustar e imprimir -->
+  <div class="insta-panel" id="instaPanel" hidden>
+    <div class="ip-head">
+      <b id="ipTag"></b><span id="ipStatus"></span><span class="grow"></span>
+      <div class="ip-counts" id="ipCounts"></div>
+      <button class="ghost" id="ipFetch">Buscar agora</button><button id="ipGallery">Galeria</button>
+    </div>
+    <div class="ip-grid">
+      <section class="ip-col">
+        <h2>Chegando <span id="ipNewCount">0</span></h2>
+        <div class="ip-list" id="ipIncoming"></div>
+        <p class="hint" id="ipNoNew">Nenhuma foto nova. Elas aparecem aqui assim que alguém posta com a hashtag.</p>
+      </section>
+      <section class="ip-col ip-sheet">
+        <h2>Folha</h2>
+        <div class="ip-sheetbox" id="ipSheetBox"></div>
+        <p class="hint" id="ipSheetEmpty"></p>
+        <p class="hint" id="ipWaiting"></p>
+        <p class="hint">Arraste a foto para enquadrar; roda do mouse ou − / + para zoom.</p>
+        <div class="ip-zoom" id="ipZoom"></div>
+        <div class="row"><button class="ghost" id="ipSwap">Trocar os lados</button><span class="grow"></span><button class="f big" id="ipPrint">Imprimir</button></div>
+      </section>
+      <section class="ip-col">
+        <h2>Fila</h2>
+        <div class="ip-thumbs" id="ipQueue"></div>
+        <h2>Impressas</h2>
+        <div class="ip-thumbs" id="ipPrinted"></div>
+      </section>
+    </div>
+  </div>
+  <!-- sessão de fotos do convidado (guest.js) -->
+  <div class="guest-run" id="guestRun" hidden>
+    <img class="run-live" id="runLive" alt="">
+    <div class="run-shade"></div>
+    <div class="run-dots" id="runDots"></div>
+    <div class="run-mini" id="runMini" title="Toque numa foto para refazer"><div class="run-mini-now" id="runMiniNow"></div></div>
+    <div class="run-redo" id="runRedo" hidden>
+      <img id="runRedoImg" alt=""><b id="runRedoNo"></b>
+      <button class="run-btn" id="runRedoYes">Refazer esta foto</button>
+      <button class="run-btn ghost" id="runRedoKeep">Manter</button>
+    </div>
+    <div class="run-pile" id="runPile"></div>
+    <button class="run-cancel" id="runCancel" title="Encerrar a sessão" aria-label="Encerrar a sessão"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="run-part" data-part="say"><p class="run-say" id="runSay"></p></div>
+    <div class="run-part" data-part="count"><b class="run-count" id="runCount"></b></div>
+    <div class="run-part" data-part="choose"><p class="run-title">Escolha o seu layout</p><div class="run-layouts" id="runLayouts"></div></div>
+    <div class="run-part" data-part="review" id="runReview">
+      <div class="run-shotbox" id="runShotBox"><img id="runShot" alt=""><span id="runShotNo"></span></div>
+      <div class="run-bar"><i id="runReviewBar"></i></div>
+    </div>
+    <div class="run-part" data-part="result" id="runResultPart">
+      <div class="run-result" id="runResult"></div>
+      <div class="run-actions"><button class="run-btn" id="runPrint">Imprimir</button><button class="run-btn ghost" id="runDone">Concluir</button></div>
+      <div class="run-bar"><i id="runFinalBar"></i></div>
+    </div>
+    <div class="run-part" data-part="thanks"><p class="run-say" id="runThanks"></p><p class="run-pickup" id="runPickup"></p></div>
+    <div class="run-part" data-part="logo"><img class="run-logo" id="runLogo" src="img/logo-horizontal.svg" alt="Visualize"><span class="run-insta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg><span data-brand="instagram">@visualize360.rec</span></span></div>
+    <div class="run-flash" id="runFlash"></div>
+  </div>
+</section>
+<canvas class="intro" id="intro" aria-hidden="true"></canvas>
+
+
+<nav class="rail" aria-label="Menu">
+  <button class="mark" id="railHome" title="Tela de espera" aria-label="Voltar à tela de espera"><svg id="railMarkSvg" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" style="stroke:var(--champ)" stroke-width="1.2"/><circle cx="24" cy="24" r="13" fill="none" style="stroke:var(--champ)" stroke-width="2"/><circle cx="12" cy="12" r="3.2" style="fill:var(--rec)"/></svg><img id="railMarkImg" alt="" hidden></button>
+  <button data-tab="events" title="Eventos">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15.5" r="2.2"/></svg>
+    EVENTOS
+  </button>
+  <button class="rail-group" id="btnCfg" title="Configurações" aria-expanded="false" aria-controls="cfgMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1.08-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1.08 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+    CONFIGURAÇÕES</button>
+  <div class="rail-sub" id="cfgMenu" hidden>
+  <button data-tab="camera" title="Câmera">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="6" width="18" height="13"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/></svg>
+    CÂMERA
+  </button>
+  <button data-tab="session" title="Sessão">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/></svg>
+    SESSÃO
+  </button>
+  <button data-tab="brand" title="Marca">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.5"/></svg>
+    MARCA
+  </button>
+  <button data-tab="insta" title="InstaPrint">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><path d="M8 21v-3h8v3"/></svg>
+    INSTAPRINT
+  </button>
+  <button data-tab="print" title="Impressão">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8"/><path d="M6 14h12v7H6z"/></svg>
+    IMPRESSÃO
+  </button>
+  <button data-tab="layouts" title="Layouts">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="3" width="7" height="18"/><rect x="13" y="3" width="7" height="8"/><rect x="13" y="13" width="7" height="8"/></svg>
+    LAYOUTS
+  </button>
+  <button data-tab="counters" title="Contadores">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+    CONTADORES
+  </button>
+  <button data-tab="license" title="Ativação">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8" cy="15" r="4.5"/><path d="M11.2 11.8L20 3M16.5 6.5l2.5 2.5M14 9l2 2"/></svg>
+    ATIVAÇÃO
+  </button>
+  <button data-tab="account" title="Conta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20.5c1.2-3.8 4-5.8 7.5-5.8s6.3 2 7.5 5.8"/></svg>
+    CONTA
+  </button>
+  <button data-tab="update" title="Atualização">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 12a8 8 0 11-2.3-5.6M20 4v4.5h-4.5"/><path d="M12 8v5l3 2"/></svg>
+    ATUALIZAÇÃO
+  </button>
+  </div>
+  <button class="update-badge" id="updateBadge" data-tab="update" title="Há uma versão nova do app" hidden>ATUALIZAR</button>
+  <button class="demo-badge" id="demoBadge" data-tab="license" title="Sem key: não imprime e a foto sai com marca d’água" hidden>DEMONSTRAÇÃO</button>
+</nav>
+
+<main class="screen" id="screen-settings">
+  <!-- ===================== aba CÂMERA ===================== -->
+  <div class="tab tab-split" id="tab-camera">
+    <section class="stage">
+      <div class="view">
+        <img id="live" alt="Imagem ao vivo da câmera" hidden>
+        <div class="empty" id="empty"><h1>Câmera desconectada</h1><p>Ligue a câmera no modo M, conecte o cabo USB e toque em Conectar.</p></div>
+        <div class="rec" id="rec"><i></i>AO VIVO</div>
+        <div class="count" id="count"></div>
+        <div class="flash" id="flash"></div>
+        <div class="hung" id="hung" role="alertdialog" aria-labelledby="hungTitle">
+          <h1 id="hungTitle">A câmera parou de responder</h1>
+          <p>O app continua funcionando, mas o programa da Canon travou. Reinicie o app; se voltar a acontecer, desligue e ligue a câmera.</p>
+          <button class="f" id="btnRestart">Reiniciar o app</button>
+        </div>
+      </div>
+    </section>
+
+    <aside>
+      <h2 style="margin-top:4px">Câmera</h2>
+      <div class="row"><span class="dot" id="camDot"></span><span id="camName">Desconectada</span></div>
+      <div class="row" style="margin-top:10px">
+        <button id="btnConnect" class="f">Conectar</button>
+        <button id="btnLive" disabled>Pausar ao vivo</button>
+      </div>
+      <div class="warn" id="warnM">A câmera não está no modo <b>M</b>. Gire o seletor para M para controlar a exposição pelo PC.</div>
+
+      <h2>Foco</h2>
+      <div class="focus" role="group" aria-label="Foco">
+        <button id="btnAF" class="f" disabled title="Foco automático no centro">Focar</button>
+        <button data-step="-3" disabled title="Mais perto (passo grande)">«</button>
+        <button data-step="-1" disabled title="Mais perto">‹</button>
+        <button data-step="1" disabled title="Mais longe">›</button>
+        <button data-step="3" disabled title="Mais longe (passo grande)">»</button>
+        <button id="btnZoom" class="icon" disabled title="Lupa 5× para conferir o foco" aria-label="Lupa">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        </button>
+      </div>
+      <div class="sharp" title="Nitidez do centro da imagem: 100% = o mais nítido visto nos últimos segundos"><div class="bar"><i id="sharpBar"></i></div><b id="sharpTxt"></b></div>
+      <div class="warn" id="warnMF">A chave da lente está em <b>MF</b>. Coloque em <b>AF</b> para o app controlar o foco.</div>
+
+      <h2>Exposição</h2>
+      <label class="auto"><input type="checkbox" id="auto"><b>Automático</b></label>
+      <div class="grid2">
+        <div><label for="iso">ISO</label><select id="iso" data-key="iso" disabled></select></div>
+        <div><label for="av">Abertura</label><select id="av" data-key="av" disabled></select></div>
+        <div><label for="tv">Velocidade</label><select id="tv" data-key="tv" disabled></select></div>
+        <div><label for="wb">Balanço de branco</label><select id="wb" data-key="wb" disabled></select></div>
+      </div>
+      <label for="profile">Perfil salvo</label>
+      <div class="row"><select id="profile" style="flex:1"></select><button id="btnApply" disabled>Aplicar</button></div>
+      <div class="row" style="margin-top:8px"><input id="profileName" placeholder="Nome do novo perfil" style="flex:1"><button id="btnSave" disabled>Salvar</button></div>
+
+      <h2>Captura</h2>
+      <button id="btnShoot" class="f big" disabled>Fotografar <span style="opacity:.6">(espaço)</span></button>
+      <p class="hint">Contagem antes da foto: Configurações → Sessão.</p>
+      <div class="thumbs" id="thumbs" style="margin-top:12px"></div>
+      <button id="btnFolder" style="margin-top:10px;width:100%">Abrir pasta das fotos</button>
+      <p class="hint">As fotos vão para a pasta do evento (Impressão → Evento), em “Single”.</p>
+    </aside>
+  </div>
+
+  <!-- ===================== aba IMPRESSÃO ===================== -->
+  <div class="tab tab-split" id="tab-print" hidden>
+    <section class="stage">
+      <div class="view paper-view">
+        <div class="zoombar" id="zoombar" hidden>
+          <button class="icon" id="zoomOut" title="Diminuir (Ctrl + roda do mouse)" aria-label="Diminuir">−</button>
+          <button class="icon" id="zoomFit" title="Ajustar à tela">Ajustar</button>
+          <button class="icon" id="zoomIn" title="Aumentar (Ctrl + roda do mouse)" aria-label="Aumentar">+</button>
+          <span id="zoomTxt"></span>
+        </div>
+        <div class="paper" id="paper" hidden><img id="paperImg" alt="Folha como sai na impressora"><i class="cut" id="paperCut"></i></div>
+        <div class="empty" id="paperEmpty"><h1>Prévia da impressão</h1><p id="paperEmptyText">Escolha a impressora e o papel ao lado.</p></div>
+        <p class="paper-info" id="paperInfo"></p>
+      </div>
+    </section>
+
+    <aside>
+      <h2 style="margin-top:4px">Evento ativo</h2>
+      <p class="evnow" id="evNow"></p>
+      <div class="row" style="flex-wrap:nowrap">
+        <button class="ghost" id="btnGoEvents" style="flex:1">Trocar em Eventos</button>
+        <button class="ghost" id="btnEvFolder" style="flex:1">Abrir pasta</button>
+      </div>
+
+      <h2>Impressora</h2>
+      <label for="printer">Impressora</label><select id="printer"></select>
+      <div class="grid2">
+        <div><label for="paperPhoto">Papel 10×15</label><select id="paperPhoto"></select></div>
+        <div><label for="paperStrip">Papel tirinha</label><select id="paperStrip"></select></div>
+      </div>
+      <label for="copies">Cópias por impressão</label>
+      <select id="copies"><option>1</option><option>2</option><option>3</option></select>
+      <p class="hint">Escolha “Microsoft Print to PDF” para testar sem gastar papel.</p>
+
+      <h2>Conferir</h2>
+      <label for="prLayout">Layout na prévia</label><select id="prLayout"></select>
+      <button class="f big" id="btnPrintTest" disabled>Imprimir teste</button>
+      <p class="hint">Sai com os quadros numerados (sem fotos) e vai para a pasta do evento, em “Layout”.</p>
+    </aside>
+  </div>
+
+  <!-- ===================== aba LAYOUTS ===================== -->
+  <div class="tab" id="tab-layouts" hidden>
+    <section class="lib" id="lib">
+      <header class="lib-head">
+        <div><h1>Layouts</h1><p class="hint">Até 4 fotos por layout. Na tirinha, a folha sai com duas tiras iguais.</p></div>
+        <div class="row">
+          <button class="f" id="btnNewLayout">Criar layout</button>
+          <button id="btnImportLayout">Importar do computador</button>
+        </div>
+      </header>
+      <div class="cards" id="layoutCards"></div>
+      <p class="empty-note" id="noLayouts" hidden>Nenhum layout ainda. Crie a partir de um modelo pronto ou importe uma arte PNG feita no Photoshop/Canva.</p>
+    </section>
+
+    <section class="editor" id="editor" hidden>
+      <nav class="ed-tools" aria-label="Adicionar ao layout">
+        <button id="addSlot" title="Adicionar foto (até 4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14"/><circle cx="12" cy="12" r="3.5"/><path d="M8 5l1.5-2h5L16 5"/></svg><span>Foto <small id="slotCount"></small></span></button>
+        <button id="addText" title="Adicionar texto"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg><span>Texto</span></button>
+        <button id="addImage" title="Adicionar imagem, logo ou moldura PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16"/><circle cx="9" cy="10" r="2"/><path d="M21 17l-5-5-9 8"/></svg><span>Imagem</span></button>
+        <button id="edArrange" title="Organizar as fotos automaticamente na folha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg><span>Organizar</span></button>
+      </nav>
+
+      <div class="ed-stage" id="edStage">
+        <div class="ed-bar">
+          <button class="icon" id="edBack" title="Voltar aos layouts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <span class="ed-title" id="edTitle"></span>
+          <span class="sep"></span>
+          <button class="icon" id="edUndo" title="Desfazer (Ctrl+Z)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 010 10h-3"/></svg></button>
+          <button class="icon" id="edRedo" title="Refazer (Ctrl+Y)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 000 10h3"/></svg></button>
+          <span class="sep"></span>
+          <button class="icon on" id="edSafe" aria-pressed="true" title="Mostrar margem de segurança (3 mm)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18"/><rect x="7" y="7" width="10" height="10" stroke-dasharray="2 2"/></svg></button>
+          <span class="sep"></span>
+          <button class="icon" id="edZoomOut" title="Diminuir o zoom (Ctrl + roda do mouse)" aria-label="Diminuir o zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M7.5 10.5h6"/></svg></button>
+          <button class="zoomfit" id="edZoomFit" title="Ajustar a folha à tela">100%</button>
+          <button class="icon" id="edZoomIn" title="Aumentar o zoom (Ctrl + roda do mouse)" aria-label="Aumentar o zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M7.5 10.5h6M10.5 7.5v6"/></svg></button>
+          <span class="grow"></span>
+          <span class="saved" id="edSaved"></span>
+          <button class="icon" id="edView" title="Visualizar a folha como sai na impressão"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          <button class="icon" id="edPrint" title="Imprimir teste"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8"/><path d="M6 14h12v7H6z"/></svg></button>
+          <button class="icon f" id="edSave" title="Salvar (Ctrl+S)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/></svg></button>
+        </div>
+        <div class="ed-scroll" id="edScroll"><div class="ed-canvas" id="edCanvasWrap"><canvas id="edCanvas"></canvas><div class="ed-boxes" id="edBoxes"></div></div></div>
+        <p class="ed-note" id="edNote"></p>
+      </div>
+
+      <aside class="ed-panel ed-right" id="edProps"></aside>
+    </section>
+
+    <div class="preview" id="edPreview" hidden>
+      <div class="preview-head"><span class="eyebrow">Visualizar</span><span id="edPreviewInfo"></span><button class="ghost" id="edPreviewClose">Fechar</button></div>
+      <div class="preview-sheet" id="edPreviewSheet"></div>
+    </div>
+  </div>
+
+  <!-- ===================== aba EVENTOS ===================== -->
+  <div class="tab" id="tab-events" hidden>
+    <section class="lib" id="evList">
+      <header class="lib-head">
+        <div><h1>Eventos</h1><p class="hint">O evento <b>ativo</b> dá nome às pastas e aos arquivos, preenche {evento} e {data} nos layouts e conta fotos e impressões.</p></div>
+        <div class="row"><button class="f" id="btnNewEvent">Criar evento</button></div>
+      </header>
+      <div class="seg evtabs" id="evTabs"><button data-v="open" class="on">Aguardando</button><button data-v="closed">Histórico</button></div>
+      <div class="evcards" id="eventCards"></div>
+      <p class="empty-note" id="noEvents" hidden></p>
+    </section>
+
+    <section class="evform" id="evForm" hidden>
+      <header class="evform-head">
+        <button class="icon" id="efBack" title="Voltar à lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <h1 id="evTitle"></h1>
+        <span class="grow"></span>
+        <button class="f" id="efSave">Salvar</button>
+      </header>
+      <div class="evgrid">
+        <section class="evsec">
+          <h2>Evento</h2>
+          <label for="efName">Nome do evento</label><input id="efName" maxlength="60" placeholder="Ex.: Casamento Ana &amp; João">
+          <div class="grid2">
+            <div><label for="efDate">Data</label><input id="efDate" type="date"></div>
+            <div><label for="efClient">Cliente</label><input id="efClient" maxlength="80"></div>
+          </div>
+          <label for="efPlace">Local</label><input id="efPlace" maxlength="80">
+          <label for="efPw" id="efPwLabel">Senha do evento</label>
+          <input type="password" id="efPwCur" autocomplete="off" placeholder="Senha atual (para trocar)">
+          <div class="grid2">
+            <div><input type="password" id="efPw" autocomplete="new-password" placeholder="Senha (mín. 4)"></div>
+            <div><input type="password" id="efPw2" autocomplete="new-password" placeholder="Repetir a senha"></div>
+          </div>
+          <p class="hint" id="efPwHint">Usada para zerar contadores, apagar fotos da galeria e reabrir o evento depois de encerrado.</p>
+          <label for="efPhrase">Frase da tela do convidado</label><input id="efPhrase" maxlength="80" placeholder="Ex.: Toque na tela e sorria!">
+          <label>Produto</label>
+          <div class="seg" id="efProduct"><button data-v="totem">Totem</button><button data-v="cabine">Cabine de Fotos</button><button data-v="espelho">Espelho Mágico</button><button data-v="instaprint">InstaPrint</button></div>
+          <div id="efHashRow" hidden><label for="efHashtag">#hashtag do evento (InstaPrint)</label>
+            <div class="hashin"><span>#</span><input id="efHashtag" maxlength="100" placeholder="casamentoanaejoao2026"></div>
+            <p class="hint">Use uma hashtag única do evento. Antes da festa, faça 1 post público com ela para a hashtag existir no Instagram.</p></div>
+        </section>
+
+        <section class="evsec">
+          <h2>Impressão</h2>
+          <label class="auto"><input type="checkbox" id="efPrint"><b>Mostra o botão Imprimir ao convidado</b></label>
+          <p class="hint">A foto nunca imprime sozinha: só quando o convidado toca em Imprimir.</p>
+          <div id="efPrintRows">
+            <label>Cópias a cada impressão</label>
+            <div class="seg" id="efCopies"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button></div>
+          </div>
+        </section>
+
+        <section class="evsec evsec-wide">
+          <div class="sec-head"><h2>Frases da sessão</h2>
+            <button class="icon" id="efPhrasesReset" title="Voltar às frases padrão" aria-label="Voltar às frases padrão"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12a8 8 0 108-8H7"/><path d="M10 1L7 4l3 3"/></svg></button></div>
+          <p class="hint">Aparecem para o convidado durante as fotos, nesta ordem. Deixe em branco para não mostrar.</p>
+          <div class="phrases" id="efPhrases"></div>
+        </section>
+
+        <section class="evsec evsec-wide">
+          <h2>Tema da tela do evento</h2>
+          <div class="tcards" id="efThemes"></div>
+        </section>
+
+        <section class="evsec evsec-wide">
+          <h2>Layouts do evento</h2>
+          <p class="hint" id="efLayoutsHint"></p>
+          <p class="warnline" id="efMissing" hidden>Um layout escolhido foi excluído da biblioteca. Toque em “Tirar” no cartão vermelho e escolha outro antes de salvar.</p>
+          <div class="lpicks" id="efLayouts"></div>
+          <div class="row lpick-add">
+            <select id="efAddLayout" aria-label="Escolher layout existente"></select>
+            <button class="f" id="efNewLayout">Criar layout</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================== aba CONTADORES ===================== -->
+  <div class="tab" id="tab-session" hidden>
+    <section class="lib">
+      <header class="lib-head"><div><h1>Sessão</h1><p class="hint">Tempos da sessão de fotos (valem para todos os eventos) e os temas da tela do evento.</p></div></header>
+      <h2>Tempos de exibição</h2>
+      <div class="sess-times">
+        <div><label for="countdown">Contagem antes de cada foto</label><div class="countdown"><input type="range" id="countdown" min="0" max="10" step="1" value="3"><b id="countdownTxt">3 s</b></div></div>
+        <div><label for="stPhrase">Cada frase fica na tela</label><div class="countdown"><input type="range" id="stPhrase" min="1" max="6" step="0.5"><b></b></div></div>
+        <div><label for="stReview">O convidado vê cada foto por</label><div class="countdown"><input type="range" id="stReview" min="0" max="15" step="1"><b></b></div></div>
+        <div><label for="stFinal">Tela “como ficou”, sem toque, termina em</label><div class="countdown"><input type="range" id="stFinal" min="10" max="120" step="5"><b></b></div></div>
+        <div><label for="stThanks">Agradecimento e logo</label><div class="countdown"><input type="range" id="stThanks" min="3" max="20" step="1"><b></b></div></div>
+      </div>
+      <div class="sess-target">
+        <label for="stTarget">Tempo médio da sessão</label>
+        <div class="countdown"><input type="range" id="stTarget" min="0" max="240" step="5"><b></b></div>
+        <p class="hint" id="stEstimate"></p>
+      </div>
+      <h2>Temas</h2>
+      <p class="hint">Cada evento escolhe o seu tema (Eventos → Editar). <b data-brand="short">Visualize</b> é o padrão. Os 7 temas do app são fixos; crie os seus em <b>+ Tema personalizado</b> (ou “Personalizar” a partir de um fixo). “Ver” mostra o tema em tela cheia — volte pelo botão de menu.</p>
+      <div class="tcards" id="themeGallery"></div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-brand" hidden>
+    <section class="lib">
+      <header class="lib-head">
+        <div><h1>Marca</h1><p class="hint">Tudo que identifica a empresa no app: nome, contatos, QR code, logos, cores e fontes. Vale para todas as telas e para os layouts novos.</p></div>
+        <div class="row"><button class="ghost" id="brPreview">Ver a tela de espera</button><button class="ghost" id="brReset">Voltar à marca Visualize</button></div>
+      </header>
+      <div class="evgrid brgrid">
+        <section class="evsec">
+          <h2>Empresa e contato</h2>
+          <label for="brName">Nome da empresa</label><input id="brName" maxlength="80">
+          <label for="brShort">Nome curto (título da janela e nome do tema padrão)</label><input id="brShort" maxlength="30">
+          <div class="grid2">
+            <div><label for="brPhone">Telefone / WhatsApp</label><input id="brPhone" maxlength="30"></div>
+            <div><label for="brInsta">Instagram</label><input id="brInsta" maxlength="40" placeholder="@suaempresa"></div>
+          </div>
+          <label for="brSite">Site ou e-mail (opcional)</label><input id="brSite" maxlength="80">
+          <label>O QR code da tela leva para</label>
+          <div class="seg" id="brQrMode"><button data-v="whats">WhatsApp do telefone</button><button data-v="link">Outro link</button></div>
+          <div id="brQrLinkRow"><input id="brQrLink" maxlength="300" placeholder="https://…"></div>
+        </section>
+
+        <section class="evsec">
+          <h2>Cores</h2>
+          <div class="brcolors">
+            <label><input type="color" id="brAccent"><span>Destaque<small>botões, detalhes, números</small></span></label>
+            <label><input type="color" id="brBg"><span>Fundo<small>telas e menus</small></span></label>
+            <label><input type="color" id="brText"><span>Texto<small>letras sobre o fundo</small></span></label>
+            <label><input type="color" id="brRec"><span>Gravação<small>ponto do REC e alertas</small></span></label>
+          </div>
+          <p class="hint">Os tons do meio (cartões, linhas) são calculados entre o fundo e o texto. Os outros temas de evento mantêm as cores deles.</p>
+        </section>
+
+        <section class="evsec">
+          <h2>Fontes</h2>
+          <label for="brTitleFont">Títulos e frases</label>
+          <div class="row"><select id="brTitleFont" style="flex:1"></select><button data-pick="titleFontFile">Enviar fonte…</button></div>
+          <p class="brfile" id="brTitleFile" hidden><span></span><button class="ghost" data-unpick="titleFontFile">Tirar</button></p>
+          <p class="brsample serif">Toque na tela e sorria!</p>
+          <label for="brTextFont">Textos e botões</label>
+          <div class="row"><select id="brTextFont" style="flex:1"></select><button data-pick="textFontFile">Enviar fonte…</button></div>
+          <p class="brfile" id="brTextFile" hidden><span></span><button class="ghost" data-unpick="textFontFile">Tirar</button></p>
+          <p class="brsample sans">Fotos · Sessões · Impressões</p>
+        </section>
+
+        <section class="evsec evsec-wide">
+          <h2>Logos</h2>
+          <p class="hint">PNG com fundo transparente ou SVG. O logo principal também entra no lugar do logo da Visualize nos <b>layouts novos</b> criados pelos modelos (PNG/JPG).</p>
+          <div class="brlogos">
+        <div class="brlogo" data-slot="logo"><div class="brlogo-img"><img alt=""></div><b>Logo principal</b><span>Tela de espera e fim da sessão (fundo escuro)</span><small></small>
+          <div class="row"><button data-a="pick">Trocar…</button><button class="ghost" data-a="clear">Padrão</button></div></div>
+        <div class="brlogo" data-slot="logoDark"><div class="brlogo-img light"><img alt=""></div><b>Logo para fundo claro</b><span>Temas claros (Casamento, Festa Infantil)</span><small></small>
+          <div class="row"><button data-a="pick">Trocar…</button><button class="ghost" data-a="clear">Padrão</button></div></div>
+        <div class="brlogo" data-slot="icon"><div class="brlogo-img"><img alt=""></div><b>Símbolo</b><span>Tela do evento, ao lado da frase</span><small></small>
+          <div class="row"><button data-a="pick">Trocar…</button><button class="ghost" data-a="clear">Padrão</button></div></div>
+        <div class="brlogo" data-slot="iconDark"><div class="brlogo-img light"><img alt=""></div><b>Símbolo para fundo claro</b><span>Tela do evento nos temas claros</span><small></small>
+          <div class="row"><button data-a="pick">Trocar…</button><button class="ghost" data-a="clear">Padrão</button></div></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-insta" hidden>
+    <section class="lib">
+      <header class="lib-head">
+        <div><h1>InstaPrint</h1><p class="hint">Fotos postadas com a #hashtag do evento, pela API oficial da Meta (Instagram Graph API). A hashtag fica em cada evento InstaPrint (Eventos → Editar).</p></div>
+        <div class="row"><button class="f" id="igImport">Importar do Visualize Instaprint</button></div>
+      </header>
+      <div class="evgrid brgrid">
+        <section class="evsec">
+          <h2>Conta do Instagram</h2>
+          <div class="igstatus" id="igStatus"></div>
+          <label for="igAppId">ID do app (Meta)</label><input id="igAppId" maxlength="40">
+          <label for="igSecret">Chave secreta do app</label><input id="igSecret" type="password" autocomplete="off">
+          <label for="igToken">Token de acesso</label><textarea id="igToken" rows="2" autocomplete="off"></textarea>
+          <div class="row" style="margin-top:10px"><button id="igSave">Salvar</button><button id="igExchange">Converter em token de 60 dias</button><button class="ghost" id="igCheck">Conferir token</button></div>
+          <label>Conta usada na busca</label>
+          <div class="row"><button id="igFind">Encontrar automaticamente</button><select id="igAccounts" hidden style="flex:1"></select></div>
+          <p class="hint">A chave e o token ficam criptografados neste PC (Windows) e nunca aparecem na tela.</p>
+        </section>
+        <section class="evsec">
+          <h2>Busca</h2>
+          <label>Buscar novas fotos a cada</label>
+          <div class="countdown"><input type="range" id="igPoll" min="15" max="300" step="15"><b></b></div>
+          <label class="auto" style="margin-top:12px"><input type="checkbox" id="igCarousel"><b>Carrossel: trazer todas as fotos (senão, só a 1ª)</b></label>
+          <label for="igTestTag">Testar uma hashtag</label>
+          <div class="row"><div class="hashin" style="flex:1"><span>#</span><input id="igTestTag" maxlength="100"></div><button id="igTest">Testar</button></div>
+        </section>
+        <section class="evsec evsec-wide">
+          <h2>Limites da Meta</h2>
+          <ul class="iglimits">
+            <li>Só aparecem posts <b>públicos</b> do feed, das <b>últimas 24 horas</b> (stories, vídeos e reels ficam de fora).</li>
+            <li>Até <b>30 hashtags diferentes a cada 7 dias</b> por conta do Instagram.</li>
+            <li>Hashtag nova só existe depois do <b>1º post público</b> com ela — faça um post de teste antes do evento.</li>
+            <li>A Meta pode levar alguns minutos para mostrar um post novo.</li>
+            <li>O token vale <b>60 dias</b>: o app avisa quando estiver perto de vencer.</li>
+          </ul>
+          <details class="ighelp"><summary>Como gerar um token novo</summary>
+            <ol>
+              <li>Abra o Graph API Explorer (developers.facebook.com/tools/explorer), app <b>Visualize Instaprint</b>, “Token do usuário”.</li>
+              <li>Permissões: <code>instagram_basic</code>, <code>pages_show_list</code>, <code>business_management</code>, <code>pages_read_engagement</code> → <b>Generate Access Token</b> → marque a Página e a @ da empresa.</li>
+              <li>Cole o token aqui e toque em <b>Converter em token de 60 dias</b>.</li>
+            </ol></details>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-license" hidden>
+    <section class="lib">
+      <header class="lib-head"><div><h1>Ativação</h1><p class="hint">Cada equipamento usa uma key, criada no painel (Equipamentos). Ela fica presa a este PC; para trocar de PC, desvincule no painel.</p></div></header>
+      <div class="evgrid">
+        <section class="evsec">
+          <h2 id="lcTitle">Modo demonstração</h2>
+          <p id="lcState" class="hint"></p>
+          <div id="lcForm">
+            <label for="lcKey">Key do equipamento</label>
+            <input id="lcKey" maxlength="40" placeholder="VB-XXXX-XXXX-XXXX-XXXX" autocomplete="off" spellcheck="false">
+            <div class="row" style="margin-top:12px"><button class="f" id="lcActivate">Ativar</button></div>
+            <p class="hint">Para ativar, o painel precisa estar ligado e com conexão. Depois de ativado, o equipamento funciona sem internet.</p>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-account" hidden>
+    <section class="lib">
+      <header class="lib-head"><div><h1>Conta</h1><p class="hint">Eventos, layouts, temas, marca, perfis da câmera e tempos da sessão ficam iguais em todos os PCs da empresa. Impressora, câmera, evento ativo e fotos continuam de cada PC.</p></div>
+        <div class="row"><button class="ghost" id="acSync">Sincronizar agora</button><button class="ghost" id="acOut">Sair</button></div></header>
+      <div class="evgrid">
+        <section class="evsec">
+          <h2>Você</h2>
+          <p class="uptxt" id="acWho"></p>
+          <p class="hint" id="acState"></p>
+        </section>
+        <section class="evsec" id="acPeople" hidden>
+          <h2>Pessoas da empresa</h2>
+          <p class="hint"><b>Administrador</b>: tudo, inclusive pessoas. <b>Gerente</b>: tudo menos pessoas. <b>Operador</b>: opera o equipamento e cria e edita eventos, sem excluir nem mexer em layouts, temas, marca e sessão. Ninguém é apagado: desative quem não deve mais entrar.</p>
+          <div class="adm-list" id="acMembers"></div>
+          <h2 style="margin-top:18px">Convidar</h2>
+          <div class="row"><input id="acEmail" type="email" placeholder="e-mail da pessoa" style="flex:1"><select id="acLevel" style="width:150px"><option value="operador">Operador</option><option value="gerente">Gerente</option><option value="administrador">Administrador</option></select><button class="f" id="acInvite">Convidar</button></div>
+          <p class="hint">A pessoa cria a conta no app com este e-mail (Entrar → Criar conta) e já entra na empresa.</p>
+          <div class="adm-list" id="acInvites"></div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-update" hidden>
+    <section class="lib">
+      <header class="lib-head"><div><h1>Atualização</h1><p class="hint">O app procura a versão nova sozinho ao abrir. Atualizar troca só o programa: eventos, layouts, fotos e configurações deste PC ficam como estão.</p></div></header>
+      <div class="evgrid">
+        <section class="evsec">
+          <h2 id="upTitle">Versão instalada</h2>
+          <p class="uptxt" id="upState"></p>
+          <p class="hint" id="upNotes"></p>
+          <div class="row" style="margin-top:14px"><button class="ghost" id="upCheck">Procurar atualização</button><button class="f" id="upInstall" hidden>Atualizar agora</button></div>
+          <p class="hint">Durante a atualização o app fecha (a câmera é desligada direitinho), instala e abre de novo em alguns segundos. Não atualize no meio de uma sessão de fotos.</p>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div class="tab" id="tab-counters" hidden>
+    <section class="counters">
+      <span class="eyebrow">Contadores do evento</span>
+      <h1 id="ctEvent"></h1>
+      <p class="hint" id="ctDate"></p>
+      <div class="tiles">
+        <div><b id="ctPhotos">0</b><span>Fotos tiradas</span></div>
+        <div><b id="ctSessions">0</b><span>Sessões</span><small id="ctStarted">concluídas</small></div>
+        <div><b id="ctCopies">0</b><span>Impressões</span><small id="ctSheets">papéis impressos</small></div>
+      </div>
+      <p class="hint">Os números deste evento ficam salvos na pasta do evento e podem ser zerados com a senha.</p>
+      <div class="row" style="margin-top:18px">
+        <button class="ghost" id="btnCtFolder">Abrir pasta do evento</button>
+        <button class="ghost" id="btnCtReset">Zerar contadores</button>
+      </div>
+
+      <span class="eyebrow" style="display:block;margin-top:46px">Total de todos os eventos</span>
+      <div class="tiles tiles-total">
+        <div><b id="totPhotos">0</b><span>Fotos tiradas</span></div>
+        <div><b id="totSessions">0</b><span>Sessões</span></div>
+        <div><b id="totCopies">0</b><span>Impressões</span></div>
+      </div>
+      <p class="hint">Soma de todos os eventos, desde o começo. Este total <b>não pode ser zerado</b> — zerar um evento não muda ele.</p>
+
+      <h2 style="margin-top:44px">Senha para zerar</h2>
+      <p class="hint" id="pwHint"></p>
+      <div class="pw" id="pwSetup">
+        <input type="password" id="pwCurrent" placeholder="Senha atual" autocomplete="off">
+        <input type="password" id="pwNext" placeholder="Nova senha" autocomplete="off">
+        <input type="password" id="pwNext2" placeholder="Repetir a nova senha" autocomplete="off">
+        <button id="btnPwSave">Salvar senha</button>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" id="modalReset" hidden>
+    <div class="box" style="max-width:520px">
+      <span class="eyebrow">Contadores</span><h1>Zerar contadores?</h1>
+      <p class="hint" id="resetWhat"></p>
+      <label for="pwReset">Senha</label><input type="password" id="pwReset" autocomplete="off">
+      <div class="row" style="margin-top:22px;justify-content:flex-end">
+        <button class="ghost" data-close>Cancelar</button><button class="f" id="btnResetGo">Zerar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalNew" hidden>
+    <div class="box">
+      <span class="eyebrow">Criar layout</span><h1>Escolha um modelo</h1>
+      <div id="templateGroups"></div>
+      <div class="row" style="margin-top:22px;justify-content:flex-end"><button class="ghost" data-close>Cancelar</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalImport" hidden>
+    <div class="box" style="max-width:760px">
+      <span class="eyebrow">Importar do computador</span><h1>Para qual formato é a arte?</h1>
+      <div class="formats" id="importFormats"></div>
+      <p class="hint" style="margin-top:16px">Exporte do Photoshop ou Canva em PNG, no tamanho do formato, com as janelas das fotos <b>transparentes</b> — o app encontra as fotos sozinho (até 4). Arquivos PSD: Arquivo → Exportar → PNG.</p>
+      <div class="row" style="margin-top:22px;justify-content:flex-end"><button class="ghost" data-close>Cancelar</button></div>
+    </div>
+  </div>
+</main>
+
+<div class="login" id="login" hidden>
+  <div class="login-box">
+    <h1>Atalaia Booth</h1>
+    <p class="eyebrow" id="lgTitle">Entrar</p>
+    <div id="lgForm">
+      <label for="lgEmail">E-mail</label><input id="lgEmail" type="email" autocomplete="username">
+      <div id="lgCodeRow" hidden><label for="lgCode">Código que chegou no e-mail</label><input id="lgCode" inputmode="numeric" maxlength="10" autocomplete="one-time-code"></div>
+      <div id="lgPassRow"><label for="lgPass" id="lgPassLabel">Senha</label><div class="row" style="flex-wrap:nowrap"><input id="lgPass" type="password" autocomplete="current-password" style="flex:1"><button class="ghost" id="lgShow" type="button" title="Mostrar a senha">ver</button></div></div>
+      <button class="f big" id="lgGo">Entrar</button>
+      <div class="row"><button class="ghost" id="lgMode">Criar conta</button><button class="ghost" id="lgForgot">Esqueci a senha</button></div>
+    </div>
+    <div id="lgCompany" hidden>
+      <p class="hint">Sua conta ainda não está em nenhuma empresa. Se a sua empresa já usa o Atalaia Booth, peça ao administrador para convidar o seu e-mail e toque em “Já fui convidado”. Ou crie a empresa agora: você vira o administrador.</p>
+      <label for="lgCompanyName">Nome da empresa</label><input id="lgCompanyName" maxlength="80">
+      <label for="lgName">Seu nome</label><input id="lgName" maxlength="60">
+      <label class="auto"><input type="checkbox" id="lgBring"><span><b>Levar os dados deste PC</b>eventos, layouts, temas e marca que já estão aqui vão para a empresa nova. Desmarcado, a empresa começa limpa (o que está aqui fica guardado à parte).</span></label>
+      <button class="f big" id="lgCreate">Criar empresa</button>
+      <div class="row"><button class="ghost" id="lgRetry">Já fui convidado</button><button class="ghost" id="lgOut">Sair</button></div>
+    </div>
+    <p class="hint" id="lgMsg"></p>
+  </div>
+</div>
+
+<div class="modal" id="modalSummary" hidden>
+    <div class="box" style="max-width:860px">
+      <span class="eyebrow">Resumo do evento</span><h1 id="sumName"></h1>
+      <p class="hint" id="sumDate"></p>
+      <div class="tiles sumtiles">
+        <div><b id="sumPhotos"></b><span>Fotos tiradas</span></div>
+        <div><b id="sumSessions"></b><span>Sessões</span></div>
+        <div><b id="sumPrints"></b><span>Impressões</span></div>
+        <div><b id="sumTime" class="sumtime"></b><span>Tempo do evento ativo</span></div>
+      </div>
+      <div class="sumlink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><div><b>Link para download</b><span id="sumLink">Disponível quando o painel online estiver ativo (Etapa 07).</span></div></div>
+      <div class="row" style="margin-top:22px;justify-content:flex-end">
+        <button id="sumFolder">Abrir pasta das fotos</button>
+        <button class="f" id="sumMail">Enviar por e-mail</button>
+        <button class="ghost" data-close>Fechar</button>
+      </div>
+    </div>
+</div>
+
+<div class="modal pwask" id="modalPw" hidden>
+  <div class="box" style="max-width:460px">
+    <span class="eyebrow" id="pwAskWhat"></span><h1 id="pwAskTitle"></h1>
+    <p class="hint" id="pwAskText"></p>
+    <input type="password" id="pwAsk" autocomplete="off" placeholder="Senha do evento">
+    <div class="row" style="margin-top:18px;justify-content:flex-end"><button class="ghost" id="pwAskNo">Cancelar</button><button class="f" id="pwAskYes">Confirmar</button></div>
+  </div>
+</div>
+
+<div class="modal" id="modalTheme" hidden>
+  <div class="box theme-editor">
+    <span class="eyebrow">Tema personalizado</span>
+    <div class="te-grid">
+      <div class="te-form">
+        <div class="grid2">
+          <div><label for="teName">Nome do tema</label><input id="teName" maxlength="30" placeholder="Ex.: Lilás da Sophia"></div>
+          <div><label for="teBase">Começar a partir de</label><select id="teBase"></select></div>
+        </div>
+        <h3>Fundo</h3>
+        <div class="seg" id="teBgStyle"><button data-v="solid">Cor única</button><button data-v="radial">Degradê redondo</button><button data-v="linear">Degradê</button></div>
+        <div class="te-colors">
+          <label><input type="color" id="teBg1"><span>Fundo</span></label>
+          <label id="teBg2Row"><input type="color" id="teBg2"><span>Fundo 2</span></label>
+          <label><input type="color" id="teText"><span>Texto</span></label>
+          <label><input type="color" id="teAccent"><span>Destaque</span></label>
+        </div>
+        <h3>Fundo animado</h3>
+        <div class="te-fx" id="teFx"></div>
+        <div class="row te-fxopts">
+          <div class="seg" id="teAmount"><button data-v="1">Pouco</button><button data-v="2">Médio</button><button data-v="3">Muito</button></div>
+          <label class="te-inline"><input type="color" id="teFxColor"><span>Cor extra</span></label>
+          <label class="auto te-inline"><input type="checkbox" id="teGlow"><b>Luzes desfocadas por trás</b></label>
+        </div>
+        <h3>Fontes</h3>
+        <div class="grid2">
+          <div><label for="teTitleFont">Frase e títulos</label><select id="teTitleFont"></select>
+            <div class="row" style="margin-top:6px"><label class="auto te-inline"><input type="checkbox" id="teItalic"><b>Itálico</b></label><label class="auto te-inline"><input type="checkbox" id="teBold"><b>Negrito</b></label></div></div>
+          <div><label for="teTextFont">Textos e botões</label><select id="teTextFont"></select></div>
+        </div>
+        <h3>Desenhos flutuando <small>(até 4)</small></h3>
+        <div class="te-icons" id="teIcons"></div>
+        <h3>Logo</h3>
+        <div class="seg" id="teLogo"><button data-v="auto">Automático pelo fundo</button><button data-v="light">Claro</button><button data-v="dark">Escuro</button></div>
+      </div>
+      <div class="te-preview">
+        <div class="te-screen" id="teScreen">
+          <canvas id="teCanvas"></canvas>
+          <div class="te-iconsbg" id="teIconsBg"></div>
+          <div class="te-content"><img id="teCam" alt=""><div><p id="tePhrase">Toque na tela e sorria!</p><small id="teSmall">NOME DO EVENTO</small></div></div>
+        </div>
+        <button id="teFull">Ver em tela cheia</button>
+        <p class="hint">A prévia mostra o fundo animado de verdade. “Ver em tela cheia” abre como fica no evento (volte pelo botão de menu).</p>
+      </div>
+    </div>
+    <div class="row" style="margin-top:18px;justify-content:flex-end">
+      <button class="ghost" id="teDelete">Excluir tema</button><span style="flex:1"></span>
+      <button class="ghost" id="teCancel">Cancelar</button><button class="f" id="teSave">Salvar tema</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="nuvem.js"></script>
+<script src="app.js"></script>
+<script src="layout-render.js"></script>
+<script src="layouts.js"></script>
+<script src="print.js"></script>
+<script src="themes.js"></script>
+<script src="brand.js"></script>
+<script src="session.js"></script>
+<script src="events.js"></script>
+<script src="home.js"></script>
+<script src="guest.js"></script>
+<script src="gallery.js"></script>
+<script src="instaprint.js"></script>
+<script src="license.js"></script>
+<script src="update.js"></script>
+<script src="account.js"></script>
+</body>
+</html>

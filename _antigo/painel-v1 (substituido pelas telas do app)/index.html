@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel — Atalaia Booth</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="painel.css">
+</head>
+<body>
+
+<!-- entrar -->
+<section class="login" id="login" hidden>
+  <form class="login-box" id="lgForm">
+    <h1>Atalaia Booth</h1>
+    <p class="eyebrow">Painel</p>
+    <label for="lgEmail">E-mail</label><input id="lgEmail" type="email" autocomplete="username" required>
+    <label for="lgPass">Senha (a mesma do app)</label><input id="lgPass" type="password" autocomplete="current-password" required>
+    <button class="btn f" type="submit">Entrar</button>
+    <p class="msg" id="lgMsg"></p>
+    <p class="hint">Ainda não tem conta? Crie pelo app Atalaia Booth (Entrar → Criar conta).</p>
+  </form>
+</section>
+
+<!-- painel -->
+<div class="app" id="app" hidden>
+  <header class="bar">
+    <a class="brand" href="../"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="#C9A96E" stroke-width="1.2"/><circle cx="24" cy="24" r="13" fill="none" stroke="#C9A96E" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="#BE2D24"/></svg><b>Atalaia Booth</b></a>
+    <nav><button class="tab on" data-view="events">Eventos</button><button class="tab" data-view="gallery">Galeria</button></nav>
+    <div class="who"><span id="who"></span><button class="btn small" id="logout">Sair</button></div>
+  </header>
+
+  <main>
+    <section id="vEvents">
+      <div class="head">
+        <div><h1>Eventos</h1><p class="hint">O que você cria ou muda aqui aparece nos equipamentos da empresa em segundos. Ativar e encerrar são feitos no equipamento.</p></div>
+        <button class="btn f" id="newEvent">Criar evento</button>
+      </div>
+      <div class="seg" id="evTabs"><button class="on" data-v="open">Aguardando</button><button data-v="closed">Histórico</button></div>
+      <p class="hint" id="loading">Carregando…</p>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section id="vForm" hidden>
+      <div class="head">
+        <div><button class="btn small" id="fBack">← Voltar</button><h1 id="fTitle">Novo evento</h1></div>
+        <button class="btn f" id="fSave">Salvar</button>
+      </div>
+      <div class="grid2">
+        <fieldset>
+          <legend>Evento</legend>
+          <label for="fName">Nome do evento</label><input id="fName" maxlength="60">
+          <div class="two"><div><label for="fDate">Data</label><input id="fDate" type="date"></div>
+            <div><label for="fProduct">Produto</label><select id="fProduct"><option value="totem">Totem</option><option value="cabine">Cabine de Fotos</option><option value="espelho">Espelho Mágico</option><option value="instaprint">InstaPrint</option></select></div></div>
+          <div class="two"><div><label for="fClient">Cliente</label><input id="fClient" maxlength="80"></div><div><label for="fPlace">Local</label><input id="fPlace" maxlength="80"></div></div>
+          <div id="fHashRow"><label for="fHashtag">#hashtag do InstaPrint</label><input id="fHashtag" maxlength="100" placeholder="festadaju"></div>
+          <label for="fPhrase">Frase da tela do convidado</label><input id="fPhrase" maxlength="80">
+        </fieldset>
+        <fieldset>
+          <legend>Impressão e senha</legend>
+          <label class="check"><input type="checkbox" id="fPrint"> Oferecer impressão ao convidado</label>
+          <label for="fCopies">Cópias a cada impressão</label><select id="fCopies"><option>1</option><option>2</option><option>3</option></select>
+          <label for="fPw">Senha do evento <small id="fPwHint"></small></label><input id="fPw" type="password" autocomplete="new-password">
+          <div id="fPwCurRow"><label for="fPwCur">Senha atual (só para trocar)</label><input id="fPwCur" type="password" autocomplete="off"></div>
+          <p class="hint">A senha do evento zera os contadores, tira foto da galeria e reabre o evento encerrado.</p>
+        </fieldset>
+        <fieldset class="wide">
+          <legend>Tema da tela do evento</legend>
+          <div class="chips" id="fThemes"></div>
+        </fieldset>
+        <fieldset class="wide">
+          <legend>Layouts do evento</legend>
+          <p class="hint">Escolha até 8. O ★ marca o padrão, que aparece primeiro. Layouts novos são criados no app.</p>
+          <div class="chips" id="fLayouts"></div>
+        </fieldset>
+      </div>
+    </section>
+
+    <section id="vGallery" hidden>
+      <div class="head"><div><h1>Galeria</h1><p class="hint">As fotos dos eventos online, com o QR para o convidado baixar.</p></div></div>
+      <div class="soon"><p class="eyebrow">Em breve</p><p>A galeria online está sendo preparada: as fotos de cada evento vão para o Google Drive da sua empresa e aparecem aqui.</p></div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="painel.js"></script>
+</body>
+</html>
