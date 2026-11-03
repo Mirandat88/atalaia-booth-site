@@ -2,7 +2,7 @@
    atualização e a tela de espera). O menu e o resto ficam iguais ao app. */
 .web .intro, .web #railHome, .web #homeFull, .web #demoBadge, .web #updateBadge, .web #edPrint, .web #sumFolder,
 .web .rail [data-tab=camera], .web .rail [data-tab=insta], .web .rail [data-tab=print], .web .rail [data-tab=counters],
-.web .rail [data-tab=license], .web .rail [data-tab=update],
+.web .rail [data-tab=license], .web .rail [data-tab=update], .web .rail [data-tab=photos],
 .web #eventCards :is([data-a=counters], [data-a=summary]) { display: none !important; }
 /* a marca do topo do menu volta ao site */
 .web .rail::before { content: ""; display: block; height: 18px; }
