@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atalaia Booth — o sistema da sua cabine de fotos</title>
+<meta name="description" content="Atalaia Booth: o software para cabine de fotos, totem, espelho mágico e InstaPrint. Eventos, layouts, temas animados, impressão e todos os equipamentos sincronizados na nuvem.">
+<meta property="og:title" content="Atalaia Booth — o sistema da sua cabine de fotos">
+<meta property="og:description" content="Eventos, layouts, temas animados, impressão e todos os equipamentos sincronizados. Feito por quem opera cabine de fotos.">
+<meta property="og:image" content="img/13-tema-casamento.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--noir:#0E0D0C;--grafite:#1A1816;--fumaca:#2E2A26;--prata:#9A938A;--marfim:#F4EFE6;--champ:#C9A96E;--rec:#BE2D24;--serif:"Cormorant Garamond",Georgia,serif;--sans:"Jost","Segoe UI",sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--noir);color:var(--marfim);font:300 17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%;display:block}
+.wrap{width:min(1180px,100% - 40px);margin:0 auto}
+/* itens de grade com imagem larga não podem empurrar a página para os lados no celular */
+.hero .wrap>*,.feature>*,.kinds>*,.grid>*,.themes>*,.videos>*,.steps>*{min-width:0}
+.eyebrow{font:500 11px var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--champ)}
+h1,h2,h3{font-family:var(--serif);font-weight:400;margin:0}
+h1{font-size:clamp(44px,7vw,84px);line-height:1;font-style:italic}
+h2{font-size:clamp(34px,4.6vw,54px);line-height:1.05}
+h3{font-size:26px;line-height:1.15}
+p{margin:0}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;font:500 12px var(--sans);letter-spacing:.24em;text-transform:uppercase;text-decoration:none;border:1px solid var(--champ);color:var(--marfim);transition:background .2s,color .2s}
+.btn:hover{background:rgba(201,169,110,.12)}
+.btn.f{background:var(--champ);color:var(--noir)}
+.btn.f:hover{background:#d8bb85}
+
+/* topo */
+.top{position:fixed;inset:0 0 auto;z-index:20;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.top.solid{background:rgba(14,13,12,.92);backdrop-filter:blur(8px);border-color:var(--fumaca)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;gap:20px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand svg{width:34px;height:34px}
+.brand b{font:italic 400 26px var(--serif)}
+.top nav{display:flex;gap:28px;align-items:center}
+.top nav a{font:400 12px var(--sans);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;color:var(--prata)}
+.top nav a:hover{color:var(--marfim)}
+.top nav .btn{padding:10px 18px;color:var(--marfim)}
+
+/* abertura */
+.hero{min-height:min(100vh,940px);display:grid;align-items:center;padding:120px 0 70px;background:radial-gradient(ellipse at 70% 30%,#1d1a16 0,var(--noir) 60%)}
+.hero .wrap{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+.hero h1 em{color:var(--champ)}
+.hero p.lead{font-size:20px;color:#cfc8bc;margin:26px 0 34px;max-width:520px}
+.hero .row{display:flex;gap:14px;flex-wrap:wrap}
+.screen{border:1px solid var(--fumaca);background:#000;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(201,169,110,.08)}
+.screen video,.screen img{width:100%;display:block}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--rec);margin-right:10px;box-shadow:0 0 12px var(--rec)}
+.hero .tag{margin-bottom:20px}
+.trust{display:flex;gap:28px;margin-top:40px;color:var(--prata);font-size:13px;flex-wrap:wrap}
+.trust b{display:block;font:400 30px var(--serif);color:var(--marfim)}
+
+section{padding:110px 0}
+.head{max-width:720px;margin-bottom:56px}
+.head p{color:#cfc8bc;margin-top:18px;font-size:18px}
+.center{text-align:center;margin-left:auto;margin-right:auto}
+
+/* equipamentos */
+.kinds{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--fumaca);border:1px solid var(--fumaca)}
+.kinds div{background:var(--noir);padding:34px 26px}
+.kinds h3{margin:14px 0 8px}
+.kinds p{color:var(--prata);font-size:15px}
+.kinds svg{width:30px;height:30px;stroke:var(--champ)}
+
+/* recursos em destaque */
+.feature{display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:center;margin-bottom:110px}
+.feature:last-child{margin-bottom:0}
+.feature.rev{grid-template-columns:1.2fr 1fr}
+.feature.rev .txt{order:2}
+.feature .txt h2{margin:14px 0 18px}
+.feature .txt p{color:#cfc8bc}
+.feature ul{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
+.feature li{padding-left:22px;position:relative;color:#ddd6ca;font-size:16px}
+.feature li:before{content:"";position:absolute;left:0;top:11px;width:10px;height:1px;background:var(--champ)}
+
+/* temas */
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.themes figure{margin:0}
+.themes figcaption{font-size:13px;color:var(--prata);margin-top:10px;letter-spacing:.06em}
+
+/* grade de recursos */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--fumaca);border:1px solid var(--fumaca)}
+.grid div{background:var(--noir);padding:32px 28px}
+.grid h3{font-size:23px;margin-bottom:10px}
+.grid p{color:var(--prata);font-size:15px}
+.grid .soon{font:500 9px var(--sans);letter-spacing:.2em;color:var(--champ);border:1px solid var(--champ);padding:3px 7px;margin-left:8px;vertical-align:middle}
+
+/* passos */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;counter-reset:s}
+.steps div{counter-increment:s;border-top:1px solid var(--fumaca);padding-top:26px}
+.steps div:before{content:counter(s,decimal-leading-zero);font:italic 400 44px var(--serif);color:var(--champ);display:block;margin-bottom:10px}
+.steps p{color:var(--prata);font-size:15px;margin-top:8px}
+
+/* vídeos */
+.videos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.videos figcaption{margin-top:12px}
+.videos figcaption b{display:block;font:400 22px var(--serif)}
+.videos figcaption span{color:var(--prata);font-size:14px}
+.videos figure{margin:0}
+
+/* perguntas */
+.faq{max-width:820px;margin:0 auto}
+.faq details{border-bottom:1px solid var(--fumaca);padding:22px 0}
+.faq summary{cursor:pointer;font:400 24px var(--serif);list-style:none;display:flex;justify-content:space-between;gap:20px}
+.faq summary:after{content:"+";color:var(--champ);font-family:var(--sans)}
+.faq details[open] summary:after{content:"–"}
+.faq details p{color:#cfc8bc;margin-top:12px}
+
+/* chamada final */
+.cta{text-align:center;background:radial-gradient(ellipse at 50% 0,#211d18 0,var(--noir) 70%);border-top:1px solid var(--fumaca)}
+.cta h2{font-style:italic;font-size:clamp(40px,6vw,70px)}
+.cta p{color:#cfc8bc;margin:20px auto 36px;max-width:560px;font-size:19px}
+footer{padding:40px 0;color:var(--prata);font-size:13px;border-top:1px solid var(--fumaca)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+
+@media (max-width:980px){
+  .hero .wrap,.feature,.feature.rev{grid-template-columns:1fr}
+  .feature.rev .txt{order:0}
+  .kinds,.themes{grid-template-columns:repeat(2,1fr)}
+  .grid,.videos{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr}
+  .top nav a:not(.btn){display:none}
+  section{padding:80px 0}
+  .feature{margin-bottom:80px}
+}
+@media (max-width:600px){
+  .kinds,.themes,.grid,.videos{grid-template-columns:1fr}
+  .wrap{width:calc(100% - 32px)}
+  .hero{padding-top:100px}
+}
+</style>
+</head>
+<body>
+
+<header class="top" id="top">
+  <div class="wrap">
+    <a class="brand" href="#"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" fill="none" stroke="#C9A96E" stroke-width="1.2"/><circle cx="24" cy="24" r="13" fill="none" stroke="#C9A96E" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="#BE2D24"/></svg><b>Atalaia Booth</b></a>
+    <nav>
+      <a href="#recursos">Recursos</a>
+      <a href="#videos">Vídeos</a>
+      <a href="#perguntas">Perguntas</a>
+      <a class="btn" href="painel/">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow tag"><span class="dot"></span>O sistema da sua cabine de fotos</p>
+      <h1>Cada evento,<br><em>impecável.</em></h1>
+      <p class="lead">O Atalaia Booth comanda a câmera, guia o convidado, monta a foto no layout do evento e imprime na hora. Tudo configurado uma vez e igual em todos os seus equipamentos.</p>
+      <div class="row">
+        <a class="btn f" href="https://wa.me/5547997613155?text=Quero%20conhecer%20o%20Atalaia%20Booth" target="_blank" rel="noopener">Quero conhecer</a>
+        <a class="btn" href="#videos">Ver funcionando</a>
+      </div>
+      <div class="trust">
+        <div><b>4</b>tipos de equipamento</div>
+        <div><b>7</b>temas animados prontos</div>
+        <div><b>100%</b>funciona sem internet no evento</div>
+      </div>
+    </div>
+    <div class="screen"><img src="img/13-tema-casamento.jpg" alt="Tela do convidado do Atalaia Booth com o tema Casamento: Toque na tela e sorria!"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Para quem trabalha com eventos</p><h2>Um sistema para todos os seus equipamentos</h2><p>O mesmo app roda na cabine, no totem, no espelho mágico e no InstaPrint. Muda o jeito de tirar a foto; a organização é uma só.</p></div>
+    <div class="kinds">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="4" y="2.5" width="16" height="19"/><circle cx="12" cy="9" r="3"/><path d="M8 16h8"/></svg><h3>Cabine de Fotos</h3><p>Sessão guiada com contagem, várias fotos e a tirinha impressa na hora.</p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="7" y="2.5" width="10" height="15"/><circle cx="12" cy="7.5" r="2.3"/><path d="M12 17.5v4M8 21.5h8"/></svg><h3>Totem</h3><p>Tela de toque em pé, com o tema da festa e o convidado no comando.</p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="5" y="2.5" width="14" height="19" rx="7"/><path d="M9 9c1-1.5 5-1.5 6 0"/></svg><h3>Espelho Mágico</h3><p>Animações no espelho e a foto 10×15 saindo na impressora.</p></div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.2" cy="6.8" r=".9"/></svg><h3>InstaPrint</h3><p>Postou com a #hashtag do evento, a foto aparece para aprovar e imprimir.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="recursos">
+  <div class="wrap">
+    <div class="feature">
+      <div class="txt">
+        <p class="eyebrow">Eventos</p>
+        <h2>O evento inteiro em um cartão</h2>
+        <p>Cadastre o cliente, a data, o local, o produto, os layouts e o tema. No dia, é só ativar: as fotos e os contadores já vão para a pasta certa.</p>
+        <ul>
+          <li>Eventos organizados pela data, com quanto falta</li>
+          <li>Senha por evento para zerar contadores e reabrir</li>
+          <li>Encerrou: resumo com fotos, sessões, impressões e tempo</li>
+        </ul>
+      </div>
+      <div class="screen"><img src="img/02-eventos.jpg" alt="Lista de eventos do Atalaia Booth organizada por mês" loading="lazy"></div>
+    </div>
+
+    <div class="feature rev">
+      <div class="txt">
+        <p class="eyebrow">Layouts</p>
+        <h2>Monte a arte da foto em minutos</h2>
+        <p>Comece de um modelo pronto ou importe a sua moldura em PNG: o app encontra as janelas das fotos sozinho. Tirinha 5×15, 10×15 e polaroide.</p>
+        <ul>
+          <li>Editor com fotos, textos, imagens e a data do evento</li>
+          <li>Prévia exatamente como sai no papel da impressora</li>
+          <li>Na tirinha, a folha sai com duas tiras iguais lado a lado</li>
+        </ul>
+      </div>
+      <div class="screen"><img src="img/07-editor.jpg" alt="Editor de layout do Atalaia Booth com uma tirinha de 3 fotos" loading="lazy"></div>
+    </div>
+
+    <div class="feature">
+      <div class="txt">
+        <p class="eyebrow">A experiência do convidado</p>
+        <h2>Toque na tela e sorria</h2>
+        <p>A tela de espera chama o convidado com o tema da festa. A sessão conduz tudo: frases, contagem, a foto na tela e o agradecimento com a sua marca.</p>
+        <ul>
+          <li>7 temas animados e temas personalizados por evento</li>
+          <li>Tempos da sessão ajustáveis (ou um tempo médio automático)</li>
+          <li>Galeria do evento para o convidado reimprimir</li>
+        </ul>
+      </div>
+      <div class="screen"><img src="img/04-temas.jpg" alt="Galeria de temas da tela do evento no Atalaia Booth" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Temas da tela do evento</p><h2>A cara de cada festa</h2></div>
+    <div class="themes">
+      <figure><div class="screen"><img src="img/13-tema-casamento.jpg" alt="Tema Casamento" loading="lazy"></div><figcaption>Casamento</figcaption></figure>
+      <figure><div class="screen"><img src="img/13-tema-aniversario.jpg" alt="Tema Aniversário" loading="lazy"></div><figcaption>Aniversário</figcaption></figure>
+      <figure><div class="screen"><img src="img/13-tema-quinze.jpg" alt="Tema 15 Anos" loading="lazy"></div><figcaption>15 Anos</figcaption></figure>
+      <figure><div class="screen"><img src="img/13-tema-infantil.jpg" alt="Tema Festa Infantil" loading="lazy"></div><figcaption>Festa Infantil</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Tudo o que vem junto</p><h2>Feito por quem opera cabine de fotos</h2></div>
+    <div class="grid">
+      <div><h3>Câmera Canon no comando</h3><p>Ao vivo na tela, foco, exposição automática que acompanha a luz do salão e perfis salvos (pouca luz, muita luz).</p></div>
+      <div><h3>Impressão na hora</h3><p>Escolha a impressora e o papel; a prévia mostra a folha como sai, com cópias por sessão e reimpressão pela galeria.</p></div>
+      <div><h3>Sua marca em tudo</h3><p>Logo, cores, fontes, contatos e o QR code da tela de espera com o seu WhatsApp ou site.</p></div>
+      <div><h3>Todos os PCs iguais</h3><p>Entre com o seu e-mail: eventos, layouts, temas e marca ficam iguais em todos os equipamentos da empresa.</p></div>
+      <div><h3>Equipe com níveis</h3><p>Administrador, gerente e operador. O operador opera o evento sem mexer no que não deve.</p></div>
+      <div><h3>Sem internet no salão</h3><p>O equipamento trabalha com a última cópia e sincroniza quando a conexão volta. O evento não para.</p></div>
+      <div><h3>Contadores honestos</h3><p>Fotos, sessões e impressões de cada evento, e o total geral que nunca é zerado.</p></div>
+      <div><h3>Atualiza sozinho</h3><p>Versão nova? Um toque em Atualizar: o app baixa, confere e reabre. Seus dados ficam como estão.</p></div>
+      <div><h3>Galeria online e QR <span class="soon">EM BREVE</span></h3><p>As fotos do evento numa galeria online, com o QR na hora para o convidado baixar.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="videos" style="padding-top:0">
+  <div class="wrap">
+    <div class="head"><p class="eyebrow">Veja funcionando</p><h2>O Atalaia Booth em ação</h2></div>
+    <div class="videos">
+      <figure><div class="screen"><video src="video/evento.mp4" poster="img/02-eventos.jpg" controls preload="none" playsinline></video></div><figcaption><b>Do evento ao dia da festa</b><span>Criar o evento, escolher layout e tema, ativar.</span></figcaption></figure>
+      <figure><div class="screen"><video src="video/layout.mp4" poster="img/07-editor.jpg" controls preload="none" playsinline></video></div><figcaption><b>Montando um layout</b><span>Modelo pronto, editor e a prévia da impressão.</span></figcaption></figure>
+      <figure><div class="screen"><video src="video/convidado.mp4" poster="img/13-tema-aniversario.jpg" controls preload="none" playsinline></video></div><figcaption><b>A tela do convidado</b><span>Os temas animados que chamam para a foto.</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="head center" style="text-align:center"><p class="eyebrow">Como começa</p><h2>Do contato ao primeiro evento</h2></div>
+    <div class="steps">
+      <div><h3>Fale com a gente</h3><p>Conte quais equipamentos você tem. Mostramos o sistema funcionando com a sua câmera e impressora.</p></div>
+      <div><h3>Instale e entre</h3><p>Um instalador para cada PC. Entre com o e-mail da empresa e convide a sua equipe.</p></div>
+      <div><h3>Monte e opere</h3><p>Sua marca, seus layouts e temas. Crie o evento, ative no dia e deixe o convidado brincar.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="perguntas" style="padding-top:0">
+  <div class="wrap faq">
+    <div class="head center" style="text-align:center"><p class="eyebrow">Perguntas</p><h2>O que todo mundo pergunta</h2></div>
+    <details><summary>Quais câmeras e impressoras funcionam?</summary><p>Câmeras Canon (linha EOS com ligação USB) e as impressoras de foto instaladas no Windows, como as térmicas de 10×15. Também dá para salvar em PDF para testar sem gastar papel.</p></details>
+    <details><summary>Precisa de internet no evento?</summary><p>Não. O equipamento funciona com a última cópia dos seus eventos, layouts e temas. A internet só é usada para sincronizar com os outros PCs, atualizar o app e, no InstaPrint, buscar as fotos da hashtag.</p></details>
+    <details><summary>Consigo usar a minha marca?</summary><p>Sim: logo, cores, fontes, telefone, Instagram e o QR code da tela de espera. A tela do evento pode ter um tema personalizado para cada festa.</p></details>
+    <details><summary>Tenho mais de um equipamento. Preciso configurar cada um?</summary><p>Não. Entre com a conta da empresa em cada PC: o que você cria num aparece nos outros em segundos.</p></details>
+    <details><summary>E a minha equipe?</summary><p>Cada pessoa entra com o próprio e-mail e um nível: administrador, gerente ou operador. Desativar alguém tira o acesso na hora, sem apagar nada.</p></details>
+    <details><summary>Como recebo as atualizações?</summary><p>Pelo próprio app, em Configurações → Atualização: um toque e ele se atualiza sozinho, sem mexer nos seus dados.</p></details>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <p class="eyebrow">Atalaia Booth</p>
+    <h2>Seu próximo evento merece</h2>
+    <p>Fale com a gente pelo WhatsApp e veja o sistema funcionando com os seus equipamentos.</p>
+    <a class="btn f" href="https://wa.me/5547997613155?text=Quero%20conhecer%20o%20Atalaia%20Booth" target="_blank" rel="noopener">Falar no WhatsApp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>© 2026 Atalaia Booth · feito pela Visualize Locações e Eventos</span><span><a href="painel/">Entrar no painel</a> · <a href="https://wa.me/5547997613155" target="_blank" rel="noopener">(47) 99761-3155</a></span></div>
+</footer>
+
+<script>
+const bar = document.getElementById("top"); // "top" já é uma palavra do navegador (window.top)
+const solid = () => bar.classList.toggle("solid", scrollY > 30);
+addEventListener("scroll", solid, { passive: true });
+solid();
+</script>
+</body>
+</html>
