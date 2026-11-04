@@ -228,7 +228,8 @@ document.body.classList.add("panel", "web");
     clean.defaultLayout = clean.layouts.length ? clean.defaultLayout ?? clean.layouts[0] : null;
     await validateEvent(clean);
     const disk = exists(evPath(clean.id)) ? await json(evPath(clean.id)) : null;
-    const saved = { ...clean, updated: now(), activeSeconds: disk?.activeSeconds ?? 0, passwordHash: clean.passwordHash ?? disk?.passwordHash ?? null };
+    const saved = { ...clean, updated: now(), activeSeconds: disk?.activeSeconds ?? 0, passwordHash: clean.passwordHash ?? disk?.passwordHash ?? null,
+      galleryFolderId: disk?.galleryFolderId ?? null, galleryUrl: disk?.galleryUrl ?? null }; // a galeria é o equipamento que cria
     await putJson(evPath(saved.id), saved);
     return saved;
   }
@@ -525,7 +526,7 @@ document.body.classList.add("panel", "web");
       case "events.duplicate": {
         const s = await json(evPath(m.id)), name = s.name + " (cópia)";
         const lay = (s.layouts ?? []).filter(l => exists(libLayout(l)));
-        await saveEvent({ ...s, id: newId("e"), name: name.slice(0, 60), closed: false, layouts: lay,
+        await saveEvent({ ...s, id: newId("e"), name: name.slice(0, 60), closed: false, layouts: lay, galleryFolderId: null, galleryUrl: null,
           defaultLayout: lay.includes(s.defaultLayout) ? s.defaultLayout : lay[0] ?? null, theme: (await themeOk(s.theme)) ? s.theme : "visualize" });
         return sendEvents();
       }

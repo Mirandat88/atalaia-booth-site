@@ -246,6 +246,8 @@
         break;
       case "event": // o evento da tela foi desativado ou encerrado: volta para a tela de espera
         counters = m.active ? m.counters : null;
+        $("runGalleryQr").innerHTML = m.galleryQr ?? "";
+        $("runGallery").hidden = !m.galleryQr;
         refreshActive();
         if (guestId && !m.active && home.classList.contains("guest")) { GuestSession.cancel(); guestId = null; home.classList.remove("guest"); }
         break;

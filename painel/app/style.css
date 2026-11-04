@@ -320,6 +320,7 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .evcard-text{position:relative}
 .evcard p{margin:1px 0;font-size:13px}
 .evcard p.hint{font-size:11.5px}
+.evgallery{color:var(--champ);text-decoration:none;letter-spacing:.04em}.evgallery:hover{text-decoration:underline}
 .evcard .badge{position:absolute;top:2px;right:0;background:var(--champ);color:var(--noir);font:500 9px var(--sans);letter-spacing:.24em;text-transform:uppercase;padding:4px 8px}
 .evcard .acts{display:flex;gap:6px;padding:8px 14px 12px}
 .evcard .acts button.icon{width:34px;height:32px;padding:0;display:flex;align-items:center;justify-content:center;border-color:var(--fumaca)}
@@ -593,6 +594,10 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .run-result canvas{display:block;box-shadow:0 24px 70px rgba(0,0,0,.5)}
 .run-pickup{font:500 clamp(20px,2vw,34px) var(--sans);letter-spacing:.12em;color:var(--h-accent)}
 .run-pickup:empty{display:none}
+.run-gallery{display:flex;align-items:center;gap:22px;margin-top:4vh;font:500 clamp(18px,1.6vw,28px) var(--sans);color:var(--h-text);text-align:left}
+.run-gallery small{font-size:.7em;opacity:.75;letter-spacing:.06em}
+.run-gallery-qr{width:clamp(130px,13vw,220px);aspect-ratio:1;background:#fff;padding:10px;border-radius:10px}
+.run-gallery-qr svg{width:100%;height:100%;display:block}
 .run-logo{width:min(62vw,950px)}
 .run-insta{display:flex;align-items:center;gap:12px;font:500 clamp(20px,1.6vw,28px) var(--sans);color:var(--h-text);letter-spacing:.04em}
 .run-insta svg{width:30px;height:30px;color:var(--h-accent)}

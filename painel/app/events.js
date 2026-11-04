@@ -71,6 +71,7 @@
             <p>${dateBR(ev.date)}${ev.closed ? "" : ` <span class="evwhen${untilOf(ev.date) === "já passou" ? " late" : ""}">${untilOf(ev.date)}</span>`} · ${PRODUCT[ev.product]}</p>
             <p class="hint">${esc([ev.client, ev.place].filter(Boolean).join(" · ")) || "&nbsp;"}</p>
             <p class="hint">${ev.layouts.length ? `${ev.layouts.length} layout${ev.layouts.length > 1 ? "s" : ""}` : "Sem layout ainda"} · ${ev.print ? "imprime quando o convidado pede" : "sem impressão"}</p>
+            ${ev.galleryUrl ? `<p class="hint"><a class="evgallery" href="${esc(ev.galleryUrl)}" target="_blank" rel="noopener">Galeria online ↗</a></p>` : ""}
           </div>
           ${layout ? `<div class="evcard-layout" title="${esc(layout.name)}"></div>` : ""}
         </div>
@@ -90,6 +91,8 @@
       };
       card.querySelector("[data-a=counters]")?.addEventListener("click", () => send({ type: "events.summary", id: ev.id }));
       card.querySelector("[data-a=edit]")?.addEventListener("click", () => send({ type: "events.open", id: ev.id }));
+      // no app, o link abre no navegador do Windows (no painel online é um link comum)
+      card.querySelector(".evgallery")?.addEventListener("click", e => { if (!window.PANEL) { e.preventDefault(); send({ type: "openGallery", url: ev.galleryUrl }); } });
       card.querySelector("[data-a=summary]")?.addEventListener("click", () => send({ type: "events.summary", id: ev.id }));
       card.querySelector("[data-a=reopen]")?.addEventListener("click", async () => {
         const pw = await askPassword("Reabrir evento", ev.name, "Digite a senha do evento para reabrir.");

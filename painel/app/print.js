@@ -13,20 +13,11 @@
     printers = p.list;
     fillSelect($("printer"), printers.map(x => ({ value: x.name, label: x.name })), p.printer ?? printers.find(x => x.isDefault)?.name);
     $("copies").value = p.copies ?? 1;
-    renderPapers(p.paperPhoto, p.paperStrip);
-  }
-
-  function renderPapers(photo, strip) {
-    const papers = printers.find(x => x.name === $("printer").value)?.papers ?? [];
-    const opts = papers.map(n => ({ value: n, label: n }));
-    // sugere os papéis da ASK-400 pelo nome quando ainda não houver escolha salva
-    fillSelect($("paperPhoto"), opts, photo ?? papers.find(n => /(^|\D)4\s*x\s*6(\D|$)|10\s*x\s*15\s*cm/i.test(n) && !/cut|corte/i.test(n)) ?? papers[0]);
-    fillSelect($("paperStrip"), opts, strip ?? papers.find(n => /cut|corte/i.test(n)) ?? papers[0]);
     savePrintSettings();
   }
 
   function savePrintSettings() {
-    send({ type: "printSettings", printer: $("printer").value || null, paperPhoto: $("paperPhoto").value || null, paperStrip: $("paperStrip").value || null, copies: +$("copies").value });
+    send({ type: "printSettings", printer: $("printer").value || null, copies: +$("copies").value });
     refresh();
   }
 
@@ -50,8 +41,9 @@
       if ($("tab-print").hidden) return;
       const l = current();
       $("btnPrintTest").disabled = !l || !$("printer").value || printing;
+      $("btnCutTest").disabled = !$("printer").value || printing;
       if (!l) return empty("Crie um layout em Configurações → Layouts para ver como sai na impressora.");
-      if (!$("printer").value) return empty("Escolha a impressora e o papel ao lado.");
+      if (!$("printer").value) return empty("Escolha a impressora ao lado.");
       try {
         shown = l;
         send({ type: "layouts.preview", format: l.format, png: await sheetOf(l), background: l.background });
@@ -67,6 +59,9 @@
     $("paperImg").src = m.png;
     const strip = shown?.format === "strip";
     const parts = [`Papel <b>${esc(m.paper)}</b> · ${num(m.paperCm[0])} × ${num(m.paperCm[1])} cm`, esc(m.printer)];
+    // impressora de foto: o driver imprime um pouco maior (sangria) e a impressora apara; a folha vai no tamanho final
+    if (m.driverMm[0] !== m.paperMm[0] || m.driverMm[1] !== m.paperMm[1])
+      parts.push(`sai em ${num(m.paperMm[0])} × ${num(m.paperMm[1])} mm (o driver imprime ${num(m.driverMm[0])} × ${num(m.driverMm[1])} mm com a sangria)`);
     if (m.rotated) parts.push("a folha gira para entrar no papel");
     // a folha nunca é cortada: em papel de outra proporção, sobra uma faixa na cor do fundo do layout
     if (m.bandMm >= 1) parts.push(`este papel tem outra proporção: sobra uma faixa de ${num(m.bandMm)} mm de cada lado`);
@@ -132,6 +127,13 @@
     }
   };
 
+  $("btnCutTest").onclick = () => {
+    if (printing) return;
+    printing = true;
+    $("btnCutTest").disabled = $("btnPrintTest").disabled = true;
+    send({ type: "layouts.cutTest" });
+  };
+
   // ---------- evento e contadores ----------
 
   function renderEvent(m) {
@@ -183,8 +185,7 @@
     send({ type: "counters.password", current: $("pwCurrent").value, next });
   };
 
-  $("printer").onchange = () => renderPapers();
-  $("paperPhoto").onchange = $("paperStrip").onchange = $("copies").onchange = savePrintSettings;
+  $("printer").onchange = $("copies").onchange = savePrintSettings;
   $("prLayout").onchange = refresh;
   $("btnGoEvents").onclick = () => showTab("events");
   $("btnEvFolder").onclick = $("btnCtFolder").onclick = () => send({ type: "openEventFolder" });

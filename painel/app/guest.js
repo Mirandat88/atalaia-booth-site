@@ -296,7 +296,7 @@
       $("runThanks").textContent = ph.thanks || "";
       $("runPickup").textContent = print ? ph.pickup || "" : "";
       for (const el of [$("runThanks"), $("runPickup")]) { el.classList.remove("in"); void el.offsetWidth; el.classList.add("in"); }
-      await pause(thanks * 600); alive(t);
+      await pause(thanks * ($("runGallery").hidden ? 600 : 1500)); alive(t); // com o QR da galeria, tempo de apontar o celular
       show("logo");
       await pause(thanks * 400); alive(t);
       // obturador nas cores do tema: fecha sobre a logo e abre já na tela do evento

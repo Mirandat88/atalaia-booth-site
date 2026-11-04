@@ -121,7 +121,8 @@
       <div class="run-actions"><button class="run-btn" id="runPrint">Imprimir</button><button class="run-btn ghost" id="runDone">Concluir</button></div>
       <div class="run-bar"><i id="runFinalBar"></i></div>
     </div>
-    <div class="run-part" data-part="thanks"><p class="run-say" id="runThanks"></p><p class="run-pickup" id="runPickup"></p></div>
+    <div class="run-part" data-part="thanks"><p class="run-say" id="runThanks"></p><p class="run-pickup" id="runPickup"></p>
+      <div class="run-gallery" id="runGallery" hidden><div class="run-gallery-qr" id="runGalleryQr"></div><p>Suas fotos online<br><small>aponte a câmera do celular</small></p></div></div>
     <div class="run-part" data-part="logo"><img class="run-logo" id="runLogo" src="img/logo-horizontal.svg" alt="Visualize"><span class="run-insta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg><span data-brand="instagram">@visualize360.rec</span></span></div>
     <div class="run-flash" id="runFlash"></div>
   </div>
@@ -276,10 +277,7 @@
 
       <h2>Impressora</h2>
       <label for="printer">Impressora</label><select id="printer"></select>
-      <div class="grid2">
-        <div><label for="paperPhoto">Papel 10×15</label><select id="paperPhoto"></select></div>
-        <div><label for="paperStrip">Papel tirinha</label><select id="paperStrip"></select></div>
-      </div>
+      <p class="hint">Papel, corte em dois e orientação vêm das Preferências de impressão do Windows (Impressoras → a impressora → Preferências de impressão).</p>
       <label for="copies">Cópias por impressão</label>
       <select id="copies"><option>1</option><option>2</option><option>3</option></select>
       <p class="hint">Escolha “Microsoft Print to PDF” para testar sem gastar papel.</p>
@@ -288,6 +286,8 @@
       <label for="prLayout">Layout na prévia</label><select id="prLayout"></select>
       <button class="f big" id="btnPrintTest" disabled>Imprimir teste</button>
       <p class="hint">Sai com os quadros numerados (sem fotos) e vai para a pasta do evento, em “Layout”.</p>
+      <button class="ghost" id="btnCutTest" disabled>Testar corte da tirinha</button>
+      <p class="hint">Uma folha metade escura, metade dourada: cortando no meio, cada tira sai de uma cor só. Se vier uma faixa da outra cor, os riscos dentro dela dizem quantos mm o corte errou.</p>
     </aside>
   </div>
 
@@ -589,7 +589,12 @@
           <p class="hint">As fotos de cada evento vão para uma pasta no Google Drive da empresa; o QR da tela leva o convidado até lá.</p>
           <label class="auto"><input type="checkbox" id="phSheets"><span><b>Enviar as folhas montadas</b>a foto final de cada sessão, como sai na impressora</span></label>
           <label class="auto"><input type="checkbox" id="phSingles"><span><b>Enviar cada foto</b>as fotos individuais da sessão (Single)</span></label>
-          <p class="hint" id="phDrive">Google Drive: ainda não ligado.</p>
+          <p class="hint" id="phDrive">Google Drive: não conectado.</p>
+          <div class="row" style="flex-wrap:nowrap">
+            <button class="f" id="phConnect" style="flex:1">Conectar Google Drive</button>
+            <button class="ghost" id="phDisconnect" style="flex:1" hidden>Desconectar</button>
+          </div>
+          <p class="hint">Abre o login do Google no navegador. O app só enxerga a pasta “Atalaia Booth” que ele mesmo cria no Drive; cada evento ganha uma pasta lá dentro, aberta para quem tiver o link.</p>
         </section>
       </div>
     </section>
