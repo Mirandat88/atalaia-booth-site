@@ -283,7 +283,11 @@
   };
   // Criar layout: vai para o editor; ao sair dele, volta para este evento com o layout novo já escolhido (se foi salvo)
   let creating = false;
-  $("efNewLayout").onclick = () => { creating = true; showTab("layouts"); $("btnNewLayout").click(); };
+  $("efNewLayout").onclick = () => {
+    creating = true;
+    document.dispatchEvent(new CustomEvent("layoutFor", { detail: $("efName").value.trim() || null }));
+    showTab("layouts");
+  };
   document.addEventListener("layoutClosed", e => {
     if (!creating || !form) return;
     creating = false;

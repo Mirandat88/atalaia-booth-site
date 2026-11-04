@@ -16,6 +16,7 @@
   let lib = { list: [], templates: [], assetsRoot: "", templatesRoot: "" }, ed = null;
 
   const F = l => LayoutRender.FORMATS[l.format];
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
   const assetsOf = l => lib.assetsRoot + l.id + "/";
   const snap = v => Math.round(v / GRID) * GRID;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -51,53 +52,66 @@
   }
 
   // ===================== biblioteca =====================
+  // em cima, um de cada modelo pronto (toque = layout novo); embaixo, os layouts já criados num menu, o mais novo primeiro
 
-  function renderLibrary() {
-    const box = $("layoutCards");
-    box.replaceChildren();
-    $("noLayouts").hidden = lib.list.length > 0;
-    for (const l of lib.list) {
-      const card = document.createElement("article");
-      card.className = "card";
-      card.innerHTML = `<div class="thumb" title="Abrir no editor"></div><div class="info"><b></b><span></span></div>
-        <div class="acts"><button data-a="edit">Editar</button><button class="ghost" data-a="dup">Duplicar</button><button class="ghost" data-a="del">Excluir</button></div>`;
-      card.querySelector("b").textContent = l.name;
-      card.querySelector("span").textContent = `${LABEL[l.format]} · ${plural(l.slots.length, "foto")}`;
-      const open = () => send({ type: "layouts.open", id: l.id });
-      card.querySelector(".thumb").onclick = open;
-      card.querySelector("[data-a=edit]").onclick = open;
-      card.querySelector("[data-a=dup]").onclick = () => send({ type: "layouts.duplicate", id: l.id });
-      card.querySelector("[data-a=del]").onclick = () => {
-        if (confirm(`Excluir “${l.name}”?\n\nEle vai para a Lixeira do Windows (dá para recuperar de lá).`))
-          send({ type: "layouts.delete", id: l.id });
-      };
-      box.append(card);
-      thumb(l, assetsOf(l), card.querySelector(".thumb"), 200, 232);
-    }
+  let forEvent = null, activeEvent = null; // nome do evento do formulário (Criar layout) / do evento ativo no app
+  let picked = null; // layout escolhido no menu
+
+  /** Nome do layout novo: o do evento (com o formato junto, se já houver um igual). Sem evento: o do modelo/arquivo. */
+  function newName(format) {
+    const base = (forEvent || activeEvent || "").trim();
+    if (!base) return null;
+    const taken = new Set(lib.list.map(l => l.name));
+    let name = base, n = 2;
+    if (taken.has(name)) name = `${base} · ${LABEL[format]}`;
+    while (taken.has(name)) name = `${base} · ${LABEL[format]} (${n++})`;
+    return name.slice(0, 80);
   }
 
-  document.querySelectorAll(".modal [data-close]").forEach(b => (b.onclick = () => (b.closest(".modal").hidden = true)));
-
-  $("btnNewLayout").onclick = () => {
-    const groups = $("templateGroups");
-    groups.replaceChildren();
-    for (const format of Object.keys(LABEL)) {
-      const h = document.createElement("h2");
-      h.textContent = LABEL[format];
-      const grid = document.createElement("div");
-      grid.className = "templates";
-      for (const t of lib.templates.filter(t => t.format === format)) {
-        const b = document.createElement("button");
-        const holder = document.createElement("div");
-        b.append(holder, t.name);
-        b.onclick = () => { $("modalNew").hidden = true; send({ type: "layouts.create", template: t.key }); };
-        grid.append(b);
-        thumb({ format, background: t.background, backgroundImage: null, overlayImage: t.overlay, slots: t.slots, texts: t.texts, images: t.images }, lib.templatesRoot, holder, 130, 170);
-      }
-      groups.append(h, grid);
+  function renderLibrary() {
+    $("layoutFor").hidden = !forEvent;
+    $("layoutFor").textContent = forEvent ? `Layout para o evento “${forEvent}”: escolha um modelo ou importe a arte.` : "";
+    const models = $("layoutModels");
+    models.replaceChildren();
+    for (const t of lib.templates) {
+      const b = document.createElement("button");
+      const holder = document.createElement("div");
+      b.append(holder, t.name, Object.assign(document.createElement("small"), { textContent: LABEL[t.format] }));
+      b.onclick = () => { send({ type: "layouts.create", template: t.key, name: newName(t.format) }); forEvent = null; };
+      models.append(b);
+      thumb({ format: t.format, background: t.background, backgroundImage: null, overlayImage: t.overlay, slots: t.slots, texts: t.texts, images: t.images }, lib.templatesRoot, holder, 120, 160);
     }
-    $("modalNew").hidden = false;
+
+    const list = [...lib.list].sort((a, b) => String(b.updated).localeCompare(String(a.updated)));
+    $("noLayouts").hidden = list.length > 0;
+    $("layoutUsed").hidden = list.length === 0;
+    if (!list.some(l => l.id === picked)) picked = list[0]?.id ?? null;
+    $("layoutPick").innerHTML = list.map(l => `<option value="${l.id}">${esc(l.name)} — ${LABEL[l.format]} · ${plural(l.slots.length, "foto")}</option>`).join("");
+    $("layoutPick").value = picked ?? "";
+    showPicked();
+  }
+
+  function showPicked() {
+    const l = lib.list.find(x => x.id === picked);
+    if (!l) return $("layoutPreview").replaceChildren();
+    $("layoutPickInfo").textContent = `${LABEL[l.format]} · ${plural(l.slots.length, "foto")}` + (l.updated ? ` · alterado em ${new Date(l.updated).toLocaleDateString("pt-BR")}` : "");
+    thumb(l, assetsOf(l), $("layoutPreview"), 220, 300);
+  }
+
+  $("layoutPick").onchange = () => { picked = $("layoutPick").value; showPicked(); };
+  const openPicked = () => picked && send({ type: "layouts.open", id: picked });
+  $("lpEdit").onclick = $("layoutPreview").onclick = openPicked;
+  $("lpDup").onclick = () => picked && send({ type: "layouts.duplicate", id: picked });
+  $("lpDel").onclick = () => {
+    const l = lib.list.find(x => x.id === picked);
+    if (l && confirm(`Excluir “${l.name}”?\n\nEle vai para a Lixeira do Windows (dá para recuperar de lá).`))
+      send({ type: "layouts.delete", id: l.id });
   };
+
+  // Eventos → Criar layout: o layout novo nasce com o nome do evento
+  document.addEventListener("layoutFor", e => { forEvent = e.detail; if (!ed) renderLibrary(); });
+
+  document.querySelectorAll(".modal [data-close]").forEach(b => (b.onclick = () => (b.closest(".modal").hidden = true)));
 
   $("btnImportLayout").onclick = () => {
     const box = $("importFormats");
@@ -110,7 +124,7 @@
       shape.style.width = f.w * view + "px";
       shape.style.height = f.h * view + "px";
       b.append(shape, label);
-      b.onclick = () => { $("modalImport").hidden = true; send({ type: "layouts.import", format }); };
+      b.onclick = () => { $("modalImport").hidden = true; send({ type: "layouts.import", format, name: newName(format) }); forEvent = null; };
       box.append(b);
     }
     $("modalImport").hidden = false;
@@ -807,6 +821,7 @@
         lib = m;
         if (!ed) renderLibrary();
         break;
+      case "events": activeEvent = m.list.find(e => e.id === m.activeId)?.name ?? null; break; // o painel não tem evento ativo
       case "layoutOpen": openEditor(m.layout, m.warning); break;
       case "layoutSaved":
         if (ed && ed.layout.id === m.layout.id) {

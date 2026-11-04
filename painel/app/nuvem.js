@@ -432,7 +432,7 @@ document.body.classList.add("panel", "web");
   }
   const hasTransparency = img => findSlots(img, img.naturalWidth, img.naturalHeight, 0, 0).length > 0;
 
-  async function fromTemplate(key) {
+  async function fromTemplate(key, name) {
     const t = (await library()).templates.find(x => x.key === key) ?? fail("Modelo não encontrado.");
     const id = newId("l");
     let images = t.images.map(i => ({ ...i }));
@@ -446,10 +446,10 @@ document.body.classList.add("panel", "web");
     }
     for (const f of [...new Set([...images.map(i => i.file), t.overlay].filter(Boolean))])
       if (!exists(`layouts/${id}/${f}`)) await put(`layouts/${id}/${f}`, new Uint8Array(await (await fetch("templates/" + f)).arrayBuffer()));
-    return saveLayout({ ...blank, id, name: t.name, format: t.format, background: t.background, overlayImage: t.overlay, slots: t.slots, texts: t.texts, images, linkPhotos: sameSize(t.slots) });
+    return saveLayout({ ...blank, id, name: (name || t.name).slice(0, 80), format: t.format, background: t.background, overlayImage: t.overlay, slots: t.slots, texts: t.texts, images, linkPhotos: sameSize(t.slots) });
   }
 
-  async function importLayout(format) {
+  async function importLayout(format, layoutName) {
     const f = await formatOf(format);
     const file = await pickFile("image/png,image/jpeg");
     if (!file) return null;
@@ -465,7 +465,7 @@ document.body.classList.add("panel", "web");
     await put(`layouts/${id}/${name}`, new Uint8Array(await file.arrayBuffer()));
     if (overlay && !slots.length) warning = `${warning ?? ""} Não encontrei janelas transparentes para as fotos: posicione-as no editor.`.trim();
     if (!overlay) slots = (await library()).templates.find(t => t.key === ({ strip: "strip-3", landscape: "land-1" }[format] ?? "port-1")).slots;
-    const layout = await saveLayout({ ...blank, id, name: file.name.replace(/\.[^.]+$/, "").slice(0, 80), format, background: "#FFFFFF",
+    const layout = await saveLayout({ ...blank, id, name: (layoutName || file.name.replace(/\.[^.]+$/, "")).slice(0, 80), format, background: "#FFFFFF",
       backgroundImage: overlay ? null : name, overlayImage: overlay ? name : null, slots, linkPhotos: sameSize(slots) });
     return { layout, warning };
   }
@@ -537,9 +537,9 @@ document.body.classList.add("panel", "web");
         return out({ type: "notice", message: "Os contadores e as fotos ficam no equipamento: veja no app." });
 
       case "layouts.list": return sendLayouts();
-      case "layouts.create": return out({ type: "layoutOpen", layout: await fromTemplate(m.template) });
+      case "layouts.create": return out({ type: "layoutOpen", layout: await fromTemplate(m.template, m.name) });
       case "layouts.open": return out({ type: "layoutOpen", layout: await json(`layouts/${m.id}/layout.json`) });
-      case "layouts.import": { const r = await importLayout(m.format); if (r) out({ type: "layoutOpen", layout: r.layout, warning: r.warning }); return; }
+      case "layouts.import": { const r = await importLayout(m.format, m.name); if (r) out({ type: "layoutOpen", layout: r.layout, warning: r.warning }); return; }
       case "layouts.save": return out({ type: "layoutSaved", layout: await saveLayout(m.layout) });
       case "layouts.duplicate": {
         const s = await json(`layouts/${m.id}/layout.json`), id = newId("l");

@@ -295,14 +295,22 @@
   <div class="tab" id="tab-layouts" hidden>
     <section class="lib" id="lib">
       <header class="lib-head">
-        <div><h1>Layouts</h1><p class="hint">Até 4 fotos por layout. Na tirinha, a folha sai com duas tiras iguais.</p></div>
-        <div class="row">
-          <button class="f" id="btnNewLayout">Criar layout</button>
-          <button id="btnImportLayout">Importar do computador</button>
-        </div>
+        <div><h1>Layouts</h1><p class="hint">Até 4 fotos por layout. Na tirinha, a folha sai com duas tiras iguais. O layout novo ganha o nome do evento.</p></div>
+        <div class="row"><button id="btnImportLayout">Importar do computador</button></div>
       </header>
-      <div class="cards" id="layoutCards"></div>
-      <p class="empty-note" id="noLayouts" hidden>Nenhum layout ainda. Crie a partir de um modelo pronto ou importe uma arte PNG feita no Photoshop/Canva.</p>
+      <h2 class="lib-sub">Comece por um modelo</h2>
+      <p class="hint" id="layoutFor" hidden></p>
+      <div class="templates lib-models" id="layoutModels"></div>
+      <h2 class="lib-sub">Layouts usados</h2>
+      <div class="lib-used" id="layoutUsed">
+        <div class="lib-used-pick">
+          <select id="layoutPick" aria-label="Layout"></select>
+          <p class="hint" id="layoutPickInfo"></p>
+          <div class="row"><button class="f" id="lpEdit">Editar</button><button class="ghost" id="lpDup">Duplicar</button><button class="ghost" id="lpDel">Excluir</button></div>
+        </div>
+        <div class="thumb lib-used-thumb" id="layoutPreview" title="Abrir no editor"></div>
+      </div>
+      <p class="empty-note" id="noLayouts" hidden>Nenhum layout ainda. Toque num modelo acima ou importe uma arte PNG feita no Photoshop/Canva.</p>
     </section>
 
     <section class="editor" id="editor" hidden>
@@ -681,14 +689,6 @@
       <div class="row" style="margin-top:22px;justify-content:flex-end">
         <button class="ghost" data-close>Cancelar</button><button class="f" id="btnResetGo">Zerar</button>
       </div>
-    </div>
-  </div>
-
-  <div class="modal" id="modalNew" hidden>
-    <div class="box">
-      <span class="eyebrow">Criar layout</span><h1>Escolha um modelo</h1>
-      <div id="templateGroups"></div>
-      <div class="row" style="margin-top:22px;justify-content:flex-end"><button class="ghost" data-close>Cancelar</button></div>
     </div>
   </div>
 

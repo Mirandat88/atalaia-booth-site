@@ -96,6 +96,12 @@ label.auto b{display:block;font-weight:500;color:var(--marfim);font-size:14px}
 .card .acts{display:flex;gap:6px;padding:10px 12px 14px}
 .card .acts button{flex:1;padding:8px 4px;font-size:10px;letter-spacing:.16em}
 .empty-note{color:var(--prata);margin-top:10px}
+.lib-sub{font:500 12px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--champ);margin:8px 0 14px}
+.lib-models{margin-bottom:38px}
+.lib-models button small{color:var(--prata);font-size:11px;letter-spacing:.06em}
+.lib-used{display:flex;gap:26px;align-items:flex-start;flex-wrap:wrap}
+.lib-used-pick{flex:1;min-width:260px;max-width:520px;display:flex;flex-direction:column;gap:10px}
+.lib-used-thumb{cursor:pointer;min-height:120px}
 .templates{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
 .templates button,.formats button{border-color:var(--fumaca);padding:12px;display:flex;flex-direction:column;align-items:center;gap:10px;letter-spacing:.12em;text-transform:none;font:400 13px var(--sans)}
 .templates button:hover,.formats button:hover{border-color:var(--champ)}
@@ -641,7 +647,7 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .login-box .row{justify-content:space-between;margin-top:6px}
 #lgMsg{text-align:center;min-height:18px}
 /* operador: mexe em tudo, mas não exclui nem zera nada (o app e a nuvem também recusam) */
-.role-operador #eventCards :is([data-a=del], [data-a=close], [data-a=reopen]), .role-operador #tab-layouts .card [data-a=del],
+.role-operador #eventCards :is([data-a=del], [data-a=close], [data-a=reopen]), .role-operador #lpDel,
 .role-operador :is(#teDelete, #brReset, #galDelete, #btnCtReset) { display: none !important; }
 /* tela de entrada: logins guardados neste PC */
 .lg-saved{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
