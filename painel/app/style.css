@@ -640,9 +640,17 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .login-box .big{width:100%;margin-top:14px;padding:14px}
 .login-box .row{justify-content:space-between;margin-top:6px}
 #lgMsg{text-align:center;min-height:18px}
-/* operador: opera o equipamento e mexe em eventos; layouts, temas, marca, sessão e exclusões são de gerente para cima */
-.role-operador .rail [data-tab=layouts], .role-operador .rail [data-tab=session], .role-operador .rail [data-tab=brand],
-.role-operador #eventCards :is([data-a=del], [data-a=close], [data-a=reopen]), .role-operador .tnew, .role-operador .tcard [data-a] { display: none !important; }
+/* operador: mexe em tudo, mas não exclui nem zera nada (o app e a nuvem também recusam) */
+.role-operador #eventCards :is([data-a=del], [data-a=close], [data-a=reopen]), .role-operador #tab-layouts .card [data-a=del],
+.role-operador :is(#teDelete, #brReset, #galDelete, #btnCtReset) { display: none !important; }
+/* tela de entrada: logins guardados neste PC */
+.lg-saved{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.lg-pick{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;border:1px solid var(--fumaca);background:var(--grafite);color:var(--marfim);text-align:left;cursor:pointer;border-radius:6px}
+.lg-pick:hover{border-color:var(--champ)}
+.lg-pick b{font:italic 400 24px var(--serif);flex:1}
+.lg-pick small{font:500 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--champ)}
+.lg-forget{border:0;background:none;color:var(--prata);font-size:18px;padding:0 4px;cursor:pointer}
+.lg-forget:hover{color:var(--rec)}
 /* listas de pessoas (aba Conta do app e painel) */
 .adm-list { display: flex; flex-direction: column; gap: 8px; padding: 0 2px; }
 .adm-row { display: grid; grid-template-columns: 1fr; gap: 3px; text-align: left; padding: 12px 14px; border: 1px solid var(--fumaca); background: var(--grafite); width: 100%; }

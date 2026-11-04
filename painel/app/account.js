@@ -4,6 +4,7 @@
   const LEVEL = { administrador: "Administrador", gerente: "Gerente", operador: "Operador" };
   let signup = false, acc = null, pending = null; // pending: esperando o código do e-mail ({ purpose, email })
   let signupPass = ""; // a senha que acabou de criar: depois de abrir o link, “Entrar” usa ela (sem digitar de novo)
+  let chosen = null, other = false; // login guardado escolhido (que pede senha) / “Entrar com outra conta”
   $("lgShow").onclick = () => {
     const show = $("lgPass").type === "password";
     $("lgPass").type = show ? "text" : "password";
@@ -15,6 +16,7 @@
   const mode = s => {
     signup = s;
     pending = null;
+    chosen = null;
     $("lgCodeRow").hidden = true;
     $("lgPassRow").hidden = false;
     $("lgEmail").disabled = false;
@@ -25,7 +27,37 @@
     $("lgPass").autocomplete = s ? "new-password" : "current-password";
     msg("");
   };
-  $("lgMode").onclick = () => mode(pending ? false : !signup);
+  $("lgMode").onclick = () => {
+    if (chosen || (other && !signup)) { mode(false); other = false; $("lgEmail").value = $("lgPass").value = ""; return render(acc); } // volta para os logins guardados
+    mode(pending ? false : !signup);
+  };
+  $("lgOther").onclick = () => { other = true; mode(false); $("lgMode").textContent = "Voltar"; render(acc); $("lgEmail").focus(); };
+
+  // logins guardados neste PC: operador entra com um toque; administrador e gerente digitam a senha
+  function renderSaved(logins) {
+    $("lgSavedList").innerHTML = logins.map((l, i) => `
+      <div class="row" style="flex-wrap:nowrap;gap:6px">
+        <button class="lg-pick" data-i="${i}"><b>${esc(l.name || l.email)}</b><small>${LEVEL[l.level]}${l.level === "operador" ? "" : " · senha"}</small></button>
+        <button class="lg-forget" data-forget="${i}" title="Tirar este login deste PC" aria-label="Tirar este login deste PC">×</button>
+      </div>`).join("");
+    $("lgSavedList").querySelectorAll("[data-i]").forEach(b => (b.onclick = () => {
+      const l = logins[b.dataset.i];
+      if (l.level === "operador") { msg("Entrando…"); return send({ type: "account.pick", id: l.id }); }
+      mode(false);
+      chosen = l;
+      render(acc);
+      $("lgEmail").value = l.email;
+      $("lgEmail").disabled = true;
+      $("lgPassLabel").textContent = `Senha de ${l.name || l.email}`;
+      $("lgMode").textContent = "Voltar";
+      $("lgPass").focus();
+    }));
+    $("lgSavedList").querySelectorAll("[data-forget]").forEach(b => (b.onclick = () => {
+      const l = logins[b.dataset.forget];
+      if (confirm(`Tirar o login de ${l.name || l.email} deste PC?\n\nA conta continua existindo; para usar de novo, entre com e-mail e senha.`))
+        send({ type: "account.forget", id: l.id });
+    }));
+  }
   // o código chegou por e-mail: confirmar a conta nova ou criar a senha nova
   const askCode = (purpose, email) => {
     pending = { purpose, email };
@@ -62,6 +94,11 @@
       msg("Conferindo…");
       return send({ type: "account.verify", ...pending, code, password: $("lgPass").value });
     }
+    if (chosen) {
+      if (!$("lgPass").value) return msg("Digite a senha.", true);
+      msg("Entrando…");
+      return send({ type: "account.pick", id: chosen.id, password: $("lgPass").value });
+    }
     const email = $("lgEmail").value.trim(), password = $("lgPass").value;
     if (!email || !password) return msg("Digite o e-mail e a senha.", true);
     msg(signup ? "Criando a conta…" : "Entrando…");
@@ -81,7 +118,7 @@
   };
   $("lgRetry").onclick = () => send({ type: "account.sync" });
   $("lgOut").onclick = $("acOut").onclick = () => {
-    if (!acc?.ready || confirm("Sair desta conta neste PC?\n\nOs eventos, layouts e configurações continuam no PC; para usar o app de novo, entre com uma conta da empresa."))
+    if (!acc?.ready || confirm("Trocar de usuário?\n\nO app volta para a tela de entrada; os logins guardados continuam nela."))
       send({ type: "account.logout" });
   };
 
@@ -117,15 +154,25 @@
     if (m.type === "accountCode") return askCode(m.purpose, m.email);
     if (m.type !== "account") return;
     acc = m;
-    $("login").hidden = m.ready;
-    $("lgForm").hidden = m.logged && pending?.purpose !== "newPassword";
-    $("lgCompany").hidden = !m.logged || m.disabled || !m.needsCompany;
-    if (m.logged && m.disabled) msg("O seu acesso foi desativado pelo administrador da empresa.", true);
-    if (m.ready) { mode(false); $("lgPass").value = ""; msg(""); }
+    render(m);
+    if (m.logged && m.unlocked && m.disabled) msg("O seu acesso foi desativado pelo administrador da empresa.", true);
+    if (m.ready) { mode(false); other = false; $("lgPass").value = ""; msg(""); }
     for (const l of Object.keys(LEVEL)) document.body.classList.toggle("role-" + l, m.ready && m.level === l);
     $("acWho").innerHTML = m.ready ? `<b>${esc(m.name || m.email)}</b> · ${esc(m.email)}<br>${esc(m.company)} · ${LEVEL[m.level]}` : "";
     $("acState").textContent = m.error ?? (m.lastSync ? `Sincronizado às ${m.lastSync}.` : "Sincronizando…");
     $("acPeople").hidden = m.level !== "administrador";
   });
+  // a tela de entrada: logins guardados, o formulário (e-mail e senha, código, senha nova) ou criar a empresa
+  function render(m) {
+    if (!m) return;
+    $("login").hidden = m.ready;
+    const entering = m.unlocked === false; // app: ainda escolhendo quem entra nesta abertura (o painel online não tem isso)
+    const saved = entering && (m.logins ?? []).length > 0 && !chosen && !other && !pending;
+    $("lgSaved").hidden = !saved;
+    if (saved) { renderSaved(m.logins); $("lgTitle").textContent = "Quem vai usar?"; }
+    $("lgForm").hidden = saved || (m.logged && !entering && pending?.purpose !== "newPassword");
+    $("lgCompany").hidden = entering || !m.logged || m.disabled || !m.needsCompany;
+  }
+
   document.addEventListener("screen", e => { if (e.detail === "account") send({ type: "account.members" }); });
 })();

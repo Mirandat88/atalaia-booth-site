@@ -603,7 +603,7 @@
   <div class="tab" id="tab-account" hidden>
     <section class="lib">
       <header class="lib-head"><div><h1>Conta</h1><p class="hint">Eventos, layouts, temas, marca, perfis da câmera e tempos da sessão ficam iguais em todos os PCs da empresa. Impressora, câmera, evento ativo e fotos continuam de cada PC.</p></div>
-        <div class="row"><button class="ghost" id="acSync">Sincronizar agora</button><button class="ghost" id="acOut">Sair</button></div></header>
+        <div class="row"><button class="ghost" id="acSync">Sincronizar agora</button><button class="ghost" id="acOut">Trocar usuário</button></div></header>
       <div class="evgrid">
         <section class="evsec">
           <h2>Você</h2>
@@ -706,6 +706,10 @@
   <div class="login-box">
     <h1>Atalaia Booth</h1>
     <p class="eyebrow" id="lgTitle">Entrar</p>
+    <div id="lgSaved" hidden>
+      <div class="lg-saved" id="lgSavedList"></div>
+      <button class="ghost" id="lgOther">Entrar com outra conta</button>
+    </div>
     <div id="lgForm">
       <label for="lgEmail">E-mail</label><input id="lgEmail" type="email" autocomplete="username">
       <div id="lgCodeRow" hidden><label for="lgCode">Código que chegou no e-mail</label><input id="lgCode" inputmode="numeric" maxlength="10" autocomplete="one-time-code"></div>
