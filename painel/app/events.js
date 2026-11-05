@@ -81,7 +81,10 @@
               + act("edit") + act("counters") + act("close")}
           ${act("dup")}${act("del")}
         </div>`;
-      if (layout) thumb(layout, card.querySelector(".evcard-layout"), 76);
+      if (layout) {
+        thumb(layout, card.querySelector(".evcard-layout"), 76);
+        card.querySelector(".evcard-layout").onclick = e => { e.stopPropagation(); viewLayout(layout); };
+      }
       card.title = on ? "Toque para abrir a tela do evento" : "";
       card.onclick = e => {
         if (e.target.closest("button")) return; // os botões do cartão fazem a ação deles
@@ -252,6 +255,7 @@
       };
       box.append(card);
       thumb(l, card.querySelector(".lthumb"));
+      card.querySelector(".lthumb").onclick = () => viewLayout(l);
     }
     // polaroide é só do InstaPrint
     const free = layouts.filter(l => !ev.layouts.includes(l.id) && (l.format !== "polaroid" || ev.product === "instaprint"));
@@ -262,6 +266,41 @@
       ? `${ev.layouts.length} layouts: o convidado escolhe na tela; o padrão (★) aparece primeiro.`
       : ev.layouts.length ? "1 layout: sai sempre este." : "Nenhum layout escolhido (dá para salvar e escolher depois).";
   }
+
+  // ---------- layout em tela cheia: o layout, ou a folha 10×15 como vai para a impressora ----------
+  let viewing = null, printMode = false;
+  async function viewLayout(l, print = false) {
+    viewing = l; printMode = print;
+    $("lvName").textContent = l.name;
+    $("lvLayout").classList.toggle("on", !print);
+    $("lvPrint").classList.toggle("on", print);
+    $("layoutView").hidden = false;
+    const f = LayoutRender.FORMATS[l.format];
+    const twice = print && (l.format === "strip" || l.format === "polaroid"); // a folha leva duas, lado a lado
+    const w = twice ? f.w * 2 : f.w, h = f.h;
+    const stage = $("lvStage"), view = Math.min((stage.clientWidth - 24) / w, (stage.clientHeight - 24) / h);
+    $("lvHint").textContent = !print ? `${FORMAT[l.format]} · fotos numeradas na ordem em que são tiradas.`
+      : twice ? "Folha 10×15 no tamanho exato em que sai: as duas tiras lado a lado; a impressora corta na linha vermelha."
+      : "Folha 10×15 no tamanho exato em que sai (papel, corte e orientação vêm das Preferências de impressão do Windows).";
+    try {
+      const c = await LayoutRender.render(l, assetsRoot + l.id + "/", { scale: view * devicePixelRatio, sheet: print });
+      if (viewing !== l || printMode !== print) return; // trocou de modo enquanto desenhava
+      c.style.width = Math.round(w * view) + "px";
+      const sheet = document.createElement("div");
+      sheet.className = "lview-sheet";
+      sheet.append(c);
+      if (twice) sheet.append(Object.assign(document.createElement("i"), { className: "lview-cut" }));
+      stage.replaceChildren(sheet);
+    } catch (err) {
+      stage.textContent = err.message;
+    }
+  }
+  const closeView = () => { $("layoutView").hidden = true; $("lvStage").replaceChildren(); viewing = null; };
+  $("lvClose").onclick = closeView;
+  $("layoutView").onclick = e => { if (e.target === $("layoutView") || e.target === $("lvStage")) closeView(); };
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && viewing) closeView(); });
+  $("lvLayout").onclick = () => viewing && viewLayout(viewing, false);
+  $("lvPrint").onclick = () => viewing && viewLayout(viewing, true);
 
   async function thumb(l, holder, size = 150) {
     const f = LayoutRender.FORMATS[l.format], view = Math.min(size / f.w, size / f.h);

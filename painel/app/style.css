@@ -326,6 +326,19 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .evcard-text{position:relative}
 .evcard p{margin:1px 0;font-size:13px}
 .evcard p.hint{font-size:11.5px}
+/* layout em tela cheia (Eventos → toque na miniatura): o layout ou a folha como sai na impressão */
+.lview{position:fixed;inset:0;z-index:90;background:rgba(14,13,12,.96);display:flex;flex-direction:column;align-items:center;padding:18px 16px}
+.lview-head{width:100%;max-width:1100px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.lview-head b{font:italic 400 28px var(--serif);flex:1;min-width:200px}
+.lview-modes{display:flex;border:1px solid var(--fumaca)}
+.lview-modes button{border:0;padding:10px 16px}
+.lview-modes button.on{background:var(--champ);color:var(--noir)}
+.lview-stage{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;position:relative}
+.lview-stage .lview-sheet{position:relative;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.lview-stage canvas{display:block}
+.lview-cut{position:absolute;top:0;bottom:0;left:50%;border-left:2px dashed var(--rec)}
+.lview-hint{text-align:center;max-width:760px}
+.evcard-layout,.lpick .lthumb{cursor:zoom-in}
 .evgallery{color:var(--champ);text-decoration:none;letter-spacing:.04em}.evgallery:hover{text-decoration:underline}
 .evcard .badge{position:absolute;top:2px;right:0;background:var(--champ);color:var(--noir);font:500 9px var(--sans);letter-spacing:.24em;text-transform:uppercase;padding:4px 8px}
 .evcard .acts{display:flex;gap:6px;padding:8px 14px 12px}

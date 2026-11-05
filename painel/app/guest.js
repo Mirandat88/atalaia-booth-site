@@ -28,13 +28,8 @@
     await pause(seconds * 1000); alive(t);
   }
 
-  /** Foco no rosto mais perto (só com a câmera de verdade). */
-  const focus = ms => { if (state.connected && GuestSession.capture === capture) send({ type: "autofocus", ms, quiet: true }); };
-
   async function countdown(t, smile) {
     const n = T().countdown;
-    // de novo na contagem (a pessoa pode ter se mexido); termina ~0,3 s antes da foto
-    if (n) focus(n * 1000 - 300);
     show("count");
     for (let k = n; k > 0; k--) {
       const c = $("runCount");
@@ -51,7 +46,7 @@
   function capture() {
     return new Promise((resolve, reject) => {
       waiting = { resolve, reject };
-      send({ type: "capture" });
+      send({ type: "capture" }); // sem foco no disparo: o foco foi feito na montagem (aba Câmera)
     });
   }
 
@@ -147,7 +142,6 @@
       const i = redoQueue.shift();
       send({ type: "session.retake" });
       dots(n, i); markSlot(i);
-      focus(3000);
       await say(t, ph.prepare);
       await shoot(i);
     }
@@ -267,7 +261,6 @@
       for (let i = 0; i < n; i++) {
         dots(n, i);
         markSlot(i);
-        focus(3000); // já começa a focar durante as frases: a 1ª foto saía antes de a T5 terminar a busca
         if (i === 0) await say(t, ph.first);
         else { await say(t, n > 1 && i === n - 1 ? ph.last : ph.next); await say(t, ph.prepare); }
         await shoot(i);

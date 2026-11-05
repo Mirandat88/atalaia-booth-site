@@ -174,6 +174,13 @@ function showTab(name) {
   document.dispatchEvent(new CustomEvent("screen", { detail: name }));
 }
 document.querySelectorAll(".rail [data-tab]").forEach(b => (b.onclick = () => showTab(b.dataset.tab)));
+// a câmera liga com evento ativo ou com esta aba aberta (o app desliga quando nenhum dos dois)
+let cameraTab = false;
+document.addEventListener("screen", e => {
+  if ((e.detail === "camera") === cameraTab) return;
+  cameraTab = e.detail === "camera";
+  send({ type: "cameraTab", open: cameraTab });
+});
 // Câmera, Impressão, Layouts e Contadores só aparecem depois de clicar na engrenagem
 const cfgMenu = open => { $("cfgMenu").hidden = !open; $("btnCfg").setAttribute("aria-expanded", open); $("btnCfg").classList.toggle("open", open); };
 $("btnCfg").onclick = () => cfgMenu($("cfgMenu").hidden);
