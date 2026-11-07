@@ -645,32 +645,39 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .run-live{top:var(--fr-top);left:var(--fr-gap);width:calc(100% - var(--fr-gap) - var(--fr-side));height:calc(100% - var(--fr-top) - var(--fr-bottom));border-radius:18px;border:2px solid color-mix(in srgb,var(--h-accent) 70%,transparent);box-shadow:0 20px 60px rgba(0,0,0,.45)}
 .run-shade{inset:var(--fr-top) var(--fr-side) var(--fr-bottom) var(--fr-gap);border-radius:18px}
 .guest-run:is([data-part=say],[data-part=count],[data-part=review]){padding:var(--fr-top) var(--fr-side) var(--fr-bottom) var(--fr-gap)}
-.guest-run:is([data-part=say],[data-part=count],[data-part=review]) :is(.run-part,.run-say){max-width:100%} /* a frase cabe na câmera */
+.guest-run:is([data-part=say],[data-part=count],[data-part=review]) .run-part{max-width:calc(100% - 8vmin)} /* a frase cabe na câmera */
+.guest-run:is([data-part=say],[data-part=count],[data-part=review]) .run-say{max-width:100%;font-size:clamp(34px,min(4.6vw,7vh),100px);overflow-wrap:break-word}
 .run-dots{top:calc(var(--fr-top) + 20px);left:calc(var(--fr-gap) + (100% - var(--fr-gap) - var(--fr-side)) / 2)}
 .run-head{position:absolute;top:0;left:0;right:0;height:var(--fr-top);display:flex;align-items:center;gap:22px;padding:0 var(--fr-gap) 0 calc(var(--fr-gap) + 70px);z-index:3;color:var(--h-text);pointer-events:none}
 .run-head b{font:var(--h-font);font-size:clamp(26px,2.4vw,46px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:50vw}
 .run-head span{font:500 clamp(13px,1vw,18px) var(--sans);letter-spacing:.18em;color:var(--h-accent);font-variant-numeric:lining-nums tabular-nums;white-space:nowrap}
 .run-head i{font-style:normal}
 .run-side{position:absolute;top:var(--fr-top);right:0;bottom:var(--fr-bottom);width:var(--fr-side);background:none;border:0;padding:0;overflow:visible;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3.5vh;z-index:3}
-.run-liveqr{display:flex;align-items:center;gap:14px;color:var(--h-text);font:500 clamp(14px,1.1vw,20px) var(--sans);text-align:left}
-.run-liveqr p{margin:0}
-.run-liveqr small{font-size:.72em;opacity:.75;letter-spacing:.04em}
-.run-liveqr .qr{width:clamp(92px,7.5vw,140px);aspect-ratio:1;background:#fff;border-radius:8px;overflow:hidden;flex:none}
+.run-liveqr{display:flex;flex-direction:column;align-items:center;gap:10px;flex:none}
+.run-liveqr span{font:500 12px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--h-accent);white-space:nowrap}
+.run-liveqr .qr{width:clamp(96px,min(8vw,13vh),150px);aspect-ratio:1;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .run-liveqr .qr svg{width:100%;height:100%;display:block}
 .guest-run:is([data-part=choose],[data-part=result],[data-part=thanks],[data-part=logo]) :is(.run-head,.run-side){display:none}
+@media (orientation:portrait){
+  .guest-run{--fr-top:9vh;--fr-side:var(--fr-gap);--fr-bottom:30vh}
+  .run-side{top:auto;left:0;right:0;bottom:0;width:auto;height:var(--fr-bottom);flex-direction:row;gap:6vw;padding:2vh 0}
+}
 /* cópias: discreto, no canto de cima da tela “como ficou” */
-.run-copies{position:absolute;top:26px;right:28px;z-index:4;display:flex;align-items:center;gap:6px;opacity:.6;color:var(--h-text);font:500 13px var(--sans);letter-spacing:.16em;text-transform:uppercase}
-.run-copies span{margin-right:6px}
-.run-copies button{width:40px;height:40px;padding:0;border-radius:50%;border:1px solid color-mix(in srgb,var(--h-text) 30%,transparent);background:var(--h-btn);color:var(--h-text);font:500 16px var(--sans);letter-spacing:0;cursor:pointer}
-.run-copies button.on{background:var(--h-accent);border-color:var(--h-accent);color:#141210}
+.run-copies{position:absolute;top:22px;right:24px;z-index:4;display:flex;align-items:center;gap:4px;opacity:.32;color:var(--h-text);transition:opacity .3s}
+.run-copies:hover,.run-copies:active{opacity:.6}
+.run-copies b{font:500 22px var(--sans);min-width:1ch;text-align:center;font-variant-numeric:lining-nums tabular-nums}
+.run-copies span{font:400 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;margin:0 4px 0 6px}
+.run-copies button{width:44px;height:44px;padding:0;border:0;background:none;color:inherit;font:300 30px/1 var(--sans);letter-spacing:0;cursor:pointer}
+.run-copies button:disabled{opacity:.25;cursor:default}
 .guest-run:not([data-part=result]) .run-copies,.guest-run:has(#runResultPart.building) .run-copies{display:none}
-/* tela do evento: QR das fotos ao vivo (galeria online), à direita */
-.home-live{position:absolute;right:42px;top:50%;translate:0 -50%;width:clamp(170px,12vw,230px);padding:18px;border:1px solid color-mix(in srgb,var(--h-accent) 45%,transparent);border-radius:16px;background:color-mix(in srgb,var(--h-btn) 85%,transparent);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:var(--h-text)}
-.home-live .qr{width:100%;aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;margin-bottom:8px}
-.home-live .qr svg{width:100%;height:100%;display:block}
-.home-live b{font:500 clamp(17px,1.2vw,22px) var(--sans);color:var(--h-accent)}
-.home-live span{font:400 clamp(12px,.8vw,14px) var(--sans);opacity:.75}
-.home-guest:has(.home-live:not([hidden])) .home-phrase{max-width:36vw}
+/* tela do evento: o QR do canto é o das fotos ao vivo (galeria online), maior e nítido; o @ fica embaixo da data */
+.home-mini-live{display:none;font:500 13px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--h-accent)}
+.home-mini.live{opacity:1}
+.home-mini.live .qr{width:clamp(120px,8vw,160px);height:auto;aspect-ratio:1}
+.home-mini.live span{display:none}
+.home-mini.live .home-mini-live{display:block}
+.home-handle{display:none;font:500 13px var(--sans);letter-spacing:.12em;color:var(--h-text);opacity:.6;margin-top:4px}
+.home.guest .home-handle{display:block}
 /* resumo / contadores do evento: QR da galeria online ao lado do link */
 .sumqr{width:120px;height:120px;flex:none;margin-left:auto;background:#fff;border-radius:8px;overflow:hidden}
 .sumlink .sumqr svg{width:100%;height:100%;display:block}

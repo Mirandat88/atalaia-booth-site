@@ -232,6 +232,13 @@
     if (e.key === "Escape" && fullscreen) send({ type: "fullscreen", on: false });
   });
 
+  // canto da tela do evento: o QR das fotos ao vivo (galeria online); sem galeria, o contato da empresa
+  let contactQr = "", galleryQr = null;
+  function miniQr() {
+    $("homeQrMini").innerHTML = galleryQr ?? contactQr;
+    $("homeMini").classList.toggle("live", !!galleryQr);
+  }
+
   host?.addEventListener("message", e => {
     const m = e.data;
     switch (m.type) {
@@ -242,12 +249,14 @@
       case "counters": counters = m.counters; refreshActive(); break;
       case "home":
         $("homeQrPhone").textContent = m.phone;
-        $("homeQr").innerHTML = $("homeQrMini").innerHTML = m.qr;
+        $("homeQr").innerHTML = m.qr;
+        contactQr = m.qr; miniQr();
         break;
       case "event": // o evento da tela foi desativado ou encerrado: volta para a tela de espera
         counters = m.active ? m.counters : null;
-        $("runGalleryQr").innerHTML = $("runLiveQr").innerHTML = $("homeLiveQr").innerHTML = m.galleryQr ?? "";
-        $("runGallery").hidden = $("runLiveQrBox").hidden = $("homeLive").hidden = !m.galleryQr;
+        $("runGalleryQr").innerHTML = $("runLiveQr").innerHTML = m.galleryQr ?? "";
+        $("runGallery").hidden = $("runLiveQrBox").hidden = !m.galleryQr;
+        galleryQr = m.galleryQr ?? null; miniQr();
         refreshActive();
         if (guestId && !m.active && home.classList.contains("guest")) { GuestSession.cancel(); guestId = null; home.classList.remove("guest"); }
         break;

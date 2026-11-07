@@ -15,7 +15,7 @@
   <div class="home-icons" id="homeIcons" aria-hidden="true"></div>
   <header class="home-top">
     <button class="home-btn" id="homeMenu" title="Menu" aria-label="Abrir o menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h16"/></svg></button>
-    <div class="home-clock"><em id="homeEvName"></em><b id="homeClock"></b><span id="homeDate"></span></div>
+    <div class="home-clock"><em id="homeEvName"></em><b id="homeClock"></b><span id="homeDate"></span><small class="home-handle" data-brand="instagram">@visualize360.rec</small></div>
     <div class="home-right">
       <button class="home-btn home-back" id="homeBackEv" hidden title="Voltar para a tela do evento ativo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M10 13.5l4 2-4 2z" fill="currentColor"/></svg><span>Voltar ao evento</span></button>
       <button class="home-btn" id="homeFull" title="Tela cheia (F11)" aria-label="Tela cheia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
@@ -43,8 +43,7 @@
       </svg>
     </div>
     <div class="home-phrase"><p id="homePhrase"></p></div>
-    <aside class="home-live" id="homeLive" hidden><div class="qr" id="homeLiveQr"></div><b>Fotos ao vivo</b><span>aponte a câmera do celular</span></aside>
-    <aside class="home-mini"><div class="qr" id="homeQrMini"></div><span data-brand="instagram">@visualize360.rec</span></aside>
+    <aside class="home-mini" id="homeMini"><div class="qr" id="homeQrMini"></div><span data-brand="instagram">@visualize360.rec</span><b class="home-mini-live">Fotos ao vivo</b></aside>
     <p class="home-evcount" id="homeEvCount"></p>
     <button class="home-gal" id="homeGallery" title="Ver e imprimir de novo as fotos da festa"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="13" height="15" rx="1"/><path d="M8 5V3h13v15h-2"/><path d="M3 16l4-4 3 3 2-2 4 4"/><circle cx="12" cy="9.5" r="1.3"/></svg></i><span>Galeria</span></button>
   </div>
@@ -105,9 +104,9 @@
     <header class="run-head"><b id="runEvName"></b><span><i id="runEvDate"></i> · <i id="runWhen"></i></span></header>
     <aside class="run-side">
       <div class="run-mini" id="runMini" title="Toque numa foto para refazer"><div class="run-mini-now" id="runMiniNow"></div></div>
-      <div class="run-liveqr" id="runLiveQrBox" hidden><div class="qr" id="runLiveQr"></div><p>Fotos ao vivo<br><small>aponte a câmera do celular</small></p></div>
+      <div class="run-liveqr" id="runLiveQrBox" hidden><div class="qr" id="runLiveQr"></div><span>Fotos ao vivo</span></div>
     </aside>
-    <div class="run-copies" id="runCopies" hidden><span>Cópias</span><button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button></div>
+    <div class="run-copies" id="runCopies" hidden><button data-d="-1" aria-label="Menos cópias">‹</button><b id="runCopiesN">1</b><span id="runCopiesL">cópia</span><button data-d="1" aria-label="Mais cópias">›</button></div>
     <div class="run-redo" id="runRedo" hidden>
       <img id="runRedoImg" alt=""><b id="runRedoNo"></b>
       <button class="run-btn" id="runRedoYes">Refazer esta foto</button>

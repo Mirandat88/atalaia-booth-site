@@ -69,7 +69,12 @@
   const mini = { layout: null, assets: "", photos: [], s: 1 };
   async function drawMini() {
     const f = LayoutRender.FORMATS[mini.layout.format];
-    mini.s = Math.min(innerHeight * ($("runLiveQrBox").hidden ? .66 : .5) / f.h, innerWidth * .2 / f.w); // lateral da moldura
+    // cabe na lateral da moldura (deitada: coluna à direita; em pé: faixa embaixo), ao lado do QR das fotos ao vivo
+    const side = run.querySelector(".run-side"), box = side.getBoundingClientRect();
+    const qr = $("runLiveQrBox").hidden ? { width: 0, height: 0 } : $("runLiveQrBox").getBoundingClientRect();
+    const row = getComputedStyle(side).flexDirection === "row";
+    const w = row ? box.width - qr.width - 60 : box.width * .8, h = row ? box.height * .92 : box.height - qr.height - 50;
+    mini.s = Math.max(.05, Math.min(h / f.h, w / f.w));
     const c = await LayoutRender.render(mini.layout, mini.assets, { scale: mini.s * devicePixelRatio, photos: mini.photos });
     c.style.width = Math.round(f.w * mini.s) + "px";
     $("runMini").querySelector("canvas")?.remove();
@@ -130,7 +135,11 @@
     redoAsk?.close(false);
     $("runRedoImg").src = mini.photos[i];
     $("runRedoNo").textContent = `Foto ${i + 1}`;
-    $("runRedo").style.right = innerWidth - $("runMini").getBoundingClientRect().left + 24 + "px"; // ao lado da miniatura
+    // ao lado da miniatura (tela deitada) ou acima dela (tela em pé, miniatura na faixa de baixo)
+    const r = $("runMini").getBoundingClientRect(), below = getComputedStyle(run.querySelector(".run-side")).flexDirection === "row";
+    Object.assign($("runRedo").style, below
+      ? { right: "", bottom: "", left: "50%", top: "45%", translate: "-50% -50%" }
+      : { left: "", bottom: "", top: "50%", translate: "0 -50%", right: innerWidth - r.left + 24 + "px" });
     $("runRedo").hidden = false;
     let timer;
     const done = new Promise(resolve => {
@@ -232,10 +241,13 @@
   // ----- cópias (1 a 3), no canto de cima da tela “como ficou”; começa nas cópias do evento -----
   let copies = 1;
   function pickCopies(k) {
-    copies = k;
-    for (const b of $("runCopies").querySelectorAll("button")) b.classList.toggle("on", +b.dataset.n === k);
+    copies = Math.min(3, Math.max(1, k));
+    $("runCopiesN").textContent = copies;
+    $("runCopiesL").textContent = copies > 1 ? "cópias" : "cópia";
+    const [less, more] = $("runCopies").querySelectorAll("button");
+    less.disabled = copies === 1; more.disabled = copies === 3;
   }
-  $("runCopies").onclick = e => { e.stopPropagation(); const b = e.target.closest("button"); if (b) pickCopies(+b.dataset.n); };
+  $("runCopies").onclick = e => { e.stopPropagation(); const b = e.target.closest("button"); if (b) pickCopies(copies + +b.dataset.d); };
 
   // ----- moldura: nome do evento, data e hora em cima -----
   const clock = () => { $("runWhen").textContent = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); };
@@ -275,6 +287,7 @@
       if (T().target) { const f = fitSessionTimes(T(), n); tuned = { phrase: f.phrase, review: f.review }; }
       redoQueue = [];
       Object.assign(mini, { layout, assets: assetsRoot + layout.id + "/", photos: Array(n).fill(null) });
+      $("runSay").textContent = ""; show("say"); // a moldura já na tela: a miniatura mede a lateral
       await drawMini(); alive(t);
       showLive = true;
       const shoot = async i => {
