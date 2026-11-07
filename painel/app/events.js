@@ -373,6 +373,12 @@
         $("sumSessions").textContent = n(s.sessions);
         $("sumPrints").textContent = n(s.prints);
         $("sumTime").textContent = s.time;
+        // galeria online (pasta do evento no Google Drive): link e QR
+        $("sumLink").innerHTML = s.galleryUrl ? `<a href="${esc(s.galleryUrl)}" target="_blank" rel="noopener">${esc(s.galleryUrl)}</a>`
+          : "O link aparece quando o Google Drive estiver conectado (Configurações → Fotos).";
+        $("sumLink").querySelector("a")?.addEventListener("click", e => { if (!window.PANEL) { e.preventDefault(); send({ type: "openGallery", url: s.galleryUrl }); } });
+        $("sumQr").innerHTML = s.galleryQr ?? "";
+        $("sumQr").hidden = !s.galleryQr;
         $("sumMail").onclick = () => send({ type: "events.mail", id: m.id });
         $("sumFolder").onclick = () => send({ type: "events.folder", id: m.id });
         $("modalSummary").hidden = false;

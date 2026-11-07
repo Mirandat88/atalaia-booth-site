@@ -18,8 +18,15 @@
     for (const el of run.querySelectorAll("[data-part]")) el.hidden = el.dataset.part !== part;
   }
 
+  /** Pergunta “refazer?” aberta: a sessão para aqui até o convidado decidir. */
+  async function holdForRedo(t) {
+    while (redoAsk) await redoAsk.done;
+    alive(t);
+  }
+
   /** Uma frase grande no meio da tela (vazia = pula). */
   async function say(t, text, seconds = T().phrase) {
+    await holdForRedo(t);
     if (!text) return;
     show("say");
     const p = $("runSay");
@@ -30,8 +37,10 @@
 
   async function countdown(t, smile) {
     const n = T().countdown;
+    await holdForRedo(t);
     show("count");
     for (let k = n; k > 0; k--) {
+      if (redoAsk) { await holdForRedo(t); show("count"); k = n + 1; continue; } // tocou na miniatura: a contagem recomeça depois
       const c = $("runCount");
       c.textContent = k;
       c.classList.remove("tick"); void c.offsetWidth; c.classList.add("tick");
@@ -60,7 +69,7 @@
   const mini = { layout: null, assets: "", photos: [], s: 1 };
   async function drawMini() {
     const f = LayoutRender.FORMATS[mini.layout.format];
-    mini.s = Math.min(innerHeight * .56 / f.h, innerWidth * .2 / f.w);
+    mini.s = Math.min(innerHeight * ($("runLiveQrBox").hidden ? .66 : .5) / f.h, innerWidth * .2 / f.w); // lateral da moldura
     const c = await LayoutRender.render(mini.layout, mini.assets, { scale: mini.s * devicePixelRatio, photos: mini.photos });
     c.style.width = Math.round(f.w * mini.s) + "px";
     $("runMini").querySelector("canvas")?.remove();
@@ -133,12 +142,11 @@
     });
     redoAsk.done = done;
   }
-  /** Entre uma foto e outra (e no fim): espera a pergunta aberta e refaz as fotos pedidas. */
+  /** Entre uma foto e outra (e no fim): espera a pergunta aberta e refaz as fotos pedidas. true = refez alguma. */
   async function redoPending(t, n, ph, shoot) {
-    for (;;) {
-      if (redoAsk) await redoAsk.done;
-      alive(t);
-      if (!redoQueue.length) return;
+    for (let did = false; ; did = true) {
+      await holdForRedo(t);
+      if (!redoQueue.length) return did;
       const i = redoQueue.shift();
       send({ type: "session.retake" });
       dots(n, i); markSlot(i);
@@ -177,6 +185,8 @@
     $("runResult").replaceChildren(canvas);
     canvas.style.transition = "none"; canvas.style.opacity = "0";
     $("runPrint").hidden = !canPrint;
+    $("runCopies").hidden = !canPrint;
+    pickCopies(copies);
     const pile = $("runPile");
     pile.replaceChildren();
     const pics = [];
@@ -219,6 +229,18 @@
     }).then(p => { alive(t); return p; });
   }
 
+  // ----- cópias (1 a 3), no canto de cima da tela “como ficou”; começa nas cópias do evento -----
+  let copies = 1;
+  function pickCopies(k) {
+    copies = k;
+    for (const b of $("runCopies").querySelectorAll("button")) b.classList.toggle("on", +b.dataset.n === k);
+  }
+  $("runCopies").onclick = e => { e.stopPropagation(); const b = e.target.closest("button"); if (b) pickCopies(+b.dataset.n); };
+
+  // ----- moldura: nome do evento, data e hora em cima -----
+  const clock = () => { $("runWhen").textContent = new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" }); };
+  setInterval(() => { if (run.dataset.on) clock(); }, 10000);
+
   function dots(n, i) {
     $("runDots").innerHTML = [...Array(n)].map((_, k) => `<i class="${k < i ? "ok" : k === i ? "now" : ""}"></i>`).join("");
   }
@@ -236,6 +258,10 @@
     run.dataset.on = "1";
     run.hidden = false;
     $("runLogo").src = brandImg(THEMES[ev.theme]?.dark ? "logoDark" : "logo");
+    $("runEvName").textContent = ev.name;
+    $("runEvDate").textContent = ev.date ? ev.date.split("-").reverse().join("/") : "";
+    clock();
+    copies = Math.min(3, Math.max(1, ev.copiesPerSession ?? 1));
     const ph = ev.phrases ?? {};
     try {
       // vários layouts: o convidado escolhe (o padrão aparece primeiro)
@@ -263,15 +289,22 @@
         markSlot(i);
         if (i === 0) await say(t, ph.first);
         else { await say(t, n > 1 && i === n - 1 ? ph.last : ph.next); await say(t, ph.prepare); }
+        // pediu para refazer durante as frases: refaz já, antes da próxima
+        if (await redoPending(t, n, ph, shoot)) { dots(n, i); markSlot(i); await say(t, ph.prepare); }
         await shoot(i);
         await redoPending(t, n, ph, shoot); // fotos que o convidado pediu para refazer (tocando na miniatura)
       }
-      dots(n, n);
-      markSlot(null);
+      // última chance de refazer (inclusive a última foto): com a câmera ainda ligada, a frase “como ficou” espera
+      for (;;) {
+        dots(n, n);
+        markSlot(null);
+        if (ph.review) await say(t, ph.review);
+        else { await holdForRedo(t); await pause(1500); alive(t); }
+        if (!await redoPending(t, n, ph, shoot)) break;
+      }
       if (live) { live = false; send({ type: "liveview", on: false }); }
       showLive = false;
       $("runLive").removeAttribute("src");
-      await say(t, ph.review);
 
       // monta a folha com as fotos de verdade (tirinha sai duas vezes, para o corte)
       const assets = assetsRoot + layout.id + "/";
@@ -281,7 +314,7 @@
       const view = await LayoutRender.render(layout, assets, { scale: vs * devicePixelRatio, photos });
       view.style.width = f.w * vs + "px"; view.style.height = f.h * vs + "px";
       const print = await result(t, view, ev.print, layout, photos, vs);
-      send({ type: "session.finish", format: layout.format, png: sheet.toDataURL("image/png"), background: layout.background, print });
+      send({ type: "session.finish", format: layout.format, png: sheet.toDataURL("image/png"), background: layout.background, print, copies });
 
       // agradecimento → logo com o Instagram
       const thanks = T().thanks;

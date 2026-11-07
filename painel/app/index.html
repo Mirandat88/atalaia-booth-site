@@ -43,6 +43,7 @@
       </svg>
     </div>
     <div class="home-phrase"><p id="homePhrase"></p></div>
+    <aside class="home-live" id="homeLive" hidden><div class="qr" id="homeLiveQr"></div><b>Fotos ao vivo</b><span>aponte a câmera do celular</span></aside>
     <aside class="home-mini"><div class="qr" id="homeQrMini"></div><span data-brand="instagram">@visualize360.rec</span></aside>
     <p class="home-evcount" id="homeEvCount"></p>
     <button class="home-gal" id="homeGallery" title="Ver e imprimir de novo as fotos da festa"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="13" height="15" rx="1"/><path d="M8 5V3h13v15h-2"/><path d="M3 16l4-4 3 3 2-2 4 4"/><circle cx="12" cy="9.5" r="1.3"/></svg></i><span>Galeria</span></button>
@@ -101,7 +102,12 @@
     <img class="run-live" id="runLive" alt="">
     <div class="run-shade"></div>
     <div class="run-dots" id="runDots"></div>
-    <div class="run-mini" id="runMini" title="Toque numa foto para refazer"><div class="run-mini-now" id="runMiniNow"></div></div>
+    <header class="run-head"><b id="runEvName"></b><span><i id="runEvDate"></i> · <i id="runWhen"></i></span></header>
+    <aside class="run-side">
+      <div class="run-mini" id="runMini" title="Toque numa foto para refazer"><div class="run-mini-now" id="runMiniNow"></div></div>
+      <div class="run-liveqr" id="runLiveQrBox" hidden><div class="qr" id="runLiveQr"></div><p>Fotos ao vivo<br><small>aponte a câmera do celular</small></p></div>
+    </aside>
+    <div class="run-copies" id="runCopies" hidden><span>Cópias</span><button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button></div>
     <div class="run-redo" id="runRedo" hidden>
       <img id="runRedoImg" alt=""><b id="runRedoNo"></b>
       <button class="run-btn" id="runRedoYes">Refazer esta foto</button>
@@ -752,7 +758,7 @@
         <div><b id="sumPrints"></b><span>Impressões</span></div>
         <div><b id="sumTime" class="sumtime"></b><span>Tempo do evento ativo</span></div>
       </div>
-      <div class="sumlink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><div><b>Link para download</b><span id="sumLink">Disponível quando o painel online estiver ativo (Etapa 07).</span></div></div>
+      <div class="sumlink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><div><b>Fotos online</b><span id="sumLink"></span></div><div class="qr sumqr" id="sumQr" hidden></div></div>
       <div class="row" style="margin-top:22px;justify-content:flex-end">
         <button id="sumFolder">Abrir pasta das fotos</button>
         <button class="f" id="sumMail">Enviar por e-mail</button>
