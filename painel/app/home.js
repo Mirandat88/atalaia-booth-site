@@ -147,6 +147,13 @@
   // ===================== abrir / fechar =====================
 
   /** Tela de espera (guest = false) ou tela do evento ativo (guest = true). */
+  // a câmera liga só com a tela do evento aberta (ou na aba Câmera): o app fica sabendo quando ela abre e fecha
+  let eventScreen = false;
+  new MutationObserver(() => {
+    const open = !home.hidden && home.classList.contains("guest");
+    if (open !== eventScreen) send({ type: "eventScreen", open: eventScreen = open });
+  }).observe(home, { attributes: true, attributeFilter: ["class", "hidden"] });
+
   window.showHome = (guest = false) => {
     if (!guest) { setTheme("visualize"); InstaPanel.close(); } // a tela de espera é sempre Visualize
     home.classList.toggle("guest", guest);
