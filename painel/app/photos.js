@@ -8,7 +8,7 @@
 
   $("phConnect").onclick = () => send({ type: "drive.connect" });
   $("phDisconnect").onclick = () => {
-    if (confirm("Desconectar o Google Drive deste PC?\n\nAs fotos que já estão no Drive continuam lá; as novas param de ir."))
+    if (confirm("Desconectar o Google Drive de todos os PCs da conta?\n\nAs fotos que já estão no Drive continuam lá; as novas param de ir."))
       send({ type: "drive.disconnect" });
   };
 

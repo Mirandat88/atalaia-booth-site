@@ -256,7 +256,7 @@ document.body.classList.add("panel", "web");
   }
   async function reopenEvent(id, password) {
     const e = await json(evPath(id));
-    await checkPw(e, password, "O evento continua encerrado.");
+    if (me?.nivel !== "administrador") await checkPw(e, password, "O evento continua encerrado."); // administrador reabre sem senha
     await putJson(evPath(id), { ...e, closed: false, updated: now() });
     const pairs = [];
     for (const p of under(`layouts/_eventos-encerrados/${id}/`)) {

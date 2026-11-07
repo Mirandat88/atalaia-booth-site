@@ -98,6 +98,10 @@
       card.querySelector(".evgallery")?.addEventListener("click", e => { if (!window.PANEL) { e.preventDefault(); send({ type: "openGallery", url: ev.galleryUrl }); } });
       card.querySelector("[data-a=summary]")?.addEventListener("click", () => send({ type: "events.summary", id: ev.id }));
       card.querySelector("[data-a=reopen]")?.addEventListener("click", async () => {
+        if (document.body.classList.contains("role-administrador")) { // administrador reabre sem a senha do evento
+          if (confirm(`Reabrir o evento “${ev.name}”?`)) send({ type: "events.reopen", id: ev.id });
+          return;
+        }
         const pw = await askPassword("Reabrir evento", ev.name, "Digite a senha do evento para reabrir.");
         if (pw != null) send({ type: "events.reopen", id: ev.id, password: pw });
       });
