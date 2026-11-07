@@ -3,8 +3,8 @@
   $("phPick").onclick = () => send({ type: "photos.pickFolder" });
   $("phOpen").onclick = () => send({ type: "photos.open" });
   $("phReset").onclick = () => send({ type: "photos.resetFolder" });
-  const save = () => send({ type: "photos.save", saveOriginals: $("phOriginals").checked, uploadSheets: $("phSheets").checked, uploadSingles: $("phSingles").checked });
-  for (const id of ["phOriginals", "phSheets", "phSingles"]) $(id).onchange = save;
+  const save = () => send({ type: "photos.save", saveOriginals: $("phOriginals").checked, uploadSingles: $("phSingles").checked });
+  for (const id of ["phOriginals", "phSingles"]) $(id).onchange = save;
 
   $("phConnect").onclick = () => send({ type: "drive.connect" });
   $("phDisconnect").onclick = () => {
@@ -31,7 +31,6 @@
     $("phFolder").textContent = m.folder + (m.isDefault ? " (padrão)" : "");
     $("phReset").hidden = m.isDefault;
     $("phOriginals").checked = m.saveOriginals;
-    $("phSheets").checked = m.uploadSheets;
     $("phSingles").checked = m.uploadSingles;
   });
   document.addEventListener("screen", e => { if (e.detail === "photos") { send({ type: "photos.get" }); send({ type: "drive.get" }); } });
