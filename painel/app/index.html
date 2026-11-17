@@ -117,6 +117,7 @@
     <div class="run-part" data-part="say"><p class="run-say" id="runSay"></p></div>
     <div class="run-part" data-part="count"><b class="run-count" id="runCount"></b></div>
     <div class="run-part" data-part="choose"><p class="run-title">Escolha o seu layout</p><div class="run-layouts" id="runLayouts"></div></div>
+    <div class="run-part" data-part="bg"><p class="run-title">Escolha o fundo da foto</p><div class="run-layouts" id="runBgs"></div></div>
     <div class="run-part" data-part="review" id="runReview">
       <div class="run-shotbox" id="runShotBox"><img id="runShot" alt=""><span id="runShotNo"></span></div>
       <div class="run-bar"><i id="runReviewBar"></i></div>
@@ -432,6 +433,13 @@
             <select id="efAddLayout" aria-label="Escolher layout existente"></select>
             <button class="f" id="efNewLayout">Criar layout</button>
           </div>
+        </section>
+
+        <section class="evsec evsec-wide">
+          <h2>Troca de fundo (IA)</h2>
+          <p class="hint">O convidado escolhe um destes fundos antes das fotos, e a IA troca o fundo atrás das pessoas. Sem fundos aqui, a foto sai como a câmera vê. Funciona melhor com o fundo de verdade liso e sem móveis encostados nas pessoas.</p>
+          <div class="bgpicks" id="efBgs"></div>
+          <div class="row"><button class="f" id="efAddBg">Adicionar fundo</button></div>
         </section>
       </div>
     </section>

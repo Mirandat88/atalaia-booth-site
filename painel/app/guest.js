@@ -52,10 +52,11 @@
   }
 
   /** Dispara a câmera e espera a foto (url). Os testes trocam GuestSession.capture por uma foto falsa. */
+  let background = null; // fundo escolhido pelo convidado (troca de fundo com IA); null = como a câmera vê
   function capture() {
     return new Promise((resolve, reject) => {
       waiting = { resolve, reject };
-      send({ type: "capture" }); // sem foco no disparo: o foco foi feito na montagem (aba Câmera)
+      send({ type: "capture", background }); // sem foco no disparo: o foco foi feito na montagem (aba Câmera)
     });
   }
 
@@ -183,6 +184,21 @@
     }).then(l => { alive(t); return l; });
   }
 
+  /** Fundos do evento (troca com IA): o convidado escolhe um, ou fica com o fundo de verdade. */
+  function chooseBackground(t, names) {
+    show("bg");
+    const root = assetsRoot.replace(/layouts\/$/, "eventos/fundos/");
+    return new Promise(resolve => {
+      $("runBgs").replaceChildren(...[null, ...names].map(name => {
+        const b = document.createElement("button");
+        b.className = "runpick";
+        b.innerHTML = name ? `<div class="th"><img alt="" src="${root + encodeURIComponent(name)}"></div>` : `<div class="th"><div class="nobg">Sem trocar</div></div>`;
+        b.onclick = e => { e.stopPropagation(); resolve(name); };
+        return b;
+      }));
+    }).then(name => { alive(t); return name; });
+  }
+
   /**
    * Tela “como ficou”: as fotos aparecem de novo, uma sobre a outra, e voam para as janelas do layout montado.
    * Depois Imprimir (se o evento imprime) ou Concluir; sem toque, conclui sozinho. true = imprimir.
@@ -279,7 +295,8 @@
       // vários layouts: o convidado escolhe (o padrão aparece primeiro)
       const sorted = [...list].sort((a, b) => (b.id === ev.defaultLayout) - (a.id === ev.defaultLayout));
       const layout = sorted.length > 1 ? await chooseLayout(t, sorted) : sorted[0];
-      send({ type: "session.start", layout: layout.id });
+      send({ type: "session.start", layout: layout.id }); // já carrega a IA se o evento tem fundos
+      background = ev.backgrounds?.length ? await chooseBackground(t, ev.backgrounds) : null;
       if (state.connected && !state.liveView) { live = true; send({ type: "liveview", on: true }); }
 
       const n = layout.slots.length, photos = [];

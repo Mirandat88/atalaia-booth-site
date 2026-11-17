@@ -125,6 +125,7 @@
   const dirty = () => form && JSON.stringify(form.ev) !== form.saved;
 
   function openForm(ev, isNew) {
+    ev = { ...ev, backgrounds: ev.backgrounds ?? [] }; // eventos de antes da troca de fundo
     form = { ev: structuredClone(ev), saved: isNew ? "" : JSON.stringify(ev), isNew };
     $("evList").hidden = true;
     $("evForm").hidden = false;
@@ -162,6 +163,7 @@
     renderPhrases();
     renderThemes();
     renderLayoutPicker();
+    renderBgs();
   }
 
   const field = (id, prop) => ($(id).oninput = () => { form.ev[prop] = $(id).value; if (prop === "name") $("evTitle").textContent = $(id).value || "Novo evento"; });
@@ -271,6 +273,21 @@
       ? `${ev.layouts.length} layouts: o convidado escolhe na tela; o padrão (★) aparece primeiro.`
       : ev.layouts.length ? "1 layout: sai sempre este." : "Nenhum layout escolhido (dá para salvar e escolher depois).";
   }
+
+  /** Fundos da troca de fundo (IA): miniaturas com Tirar (a imagem fica guardada) + Adicionar fundo. */
+  function renderBgs() {
+    const ev = form.ev, root = assetsRoot.replace(/layouts\/$/, "eventos/fundos/");
+    ev.backgrounds ??= [];
+    $("efBgs").replaceChildren(...ev.backgrounds.map(name => {
+      const card = document.createElement("div");
+      card.className = "bgpick";
+      card.innerHTML = `<img alt="Fundo" src="${root + encodeURIComponent(name)}"><button class="star ghost">Tirar</button>`;
+      card.querySelector("button").onclick = () => { ev.backgrounds = ev.backgrounds.filter(b => b !== name); renderBgs(); };
+      return card;
+    }));
+    $("efAddBg").disabled = ev.backgrounds.length >= 8;
+  }
+  $("efAddBg").onclick = () => send({ type: "events.pickBackground" });
 
   // ---------- layout em tela cheia: o layout, ou a folha 10×15 como vai para a impressora ----------
   let viewing = null, printMode = false;
@@ -386,6 +403,7 @@
         break;
       }
       case "eventOpen": openForm(m.event, !events.some(x => x.id === m.event.id)); break;
+      case "backgroundAdded": if (form) { form.ev.backgrounds = [...(form.ev.backgrounds ?? []), m.name]; renderBgs(); } break;
       case "eventSaved":
         if (!form || form.ev.id !== m.event.id) break;
         toast(m.active ? `Evento “${m.event.name}” salvo e ativo.` : `Evento “${m.event.name}” salvo.`);

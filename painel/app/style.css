@@ -601,6 +601,12 @@ button.sizelock.on{border-color:var(--champ);color:var(--champ)}
 .runpick:hover{border-color:var(--h-accent);transform:translateY(-3px)}
 .runpick .th{height:300px;display:flex;align-items:center;justify-content:center}
 .runpick span{font:400 14px var(--sans);opacity:.7}
+.runpick .th img{max-width:300px;max-height:300px;border-radius:10px;display:block}
+.runpick .th .nobg{width:300px;height:200px;border-radius:10px;border:2px dashed currentColor;opacity:.5;display:flex;align-items:center;justify-content:center;font-size:16px}
+.bgpicks{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
+.bgpick{position:relative}
+.bgpick img{width:180px;height:120px;object-fit:cover;border-radius:10px;display:block;background:#222}
+.bgpick button{position:absolute;top:6px;right:6px}
 .run-shotbox{position:relative}
 .run-shotbox img{max-height:60vh;max-width:72vw;border:8px solid #fff;box-shadow:0 24px 70px rgba(0,0,0,.55);display:block}
 .run-shotbox span{position:absolute;left:50%;top:-44px;translate:-50% 0;font:500 16px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:var(--h-accent);white-space:nowrap}

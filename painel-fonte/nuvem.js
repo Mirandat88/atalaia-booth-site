@@ -210,6 +210,9 @@ document.body.classList.add("panel", "web");
     check(e.product !== "instaprint" || /^[\p{L}\p{N}_]{2,100}$/u.test(e.hashtag), "InstaPrint: escreva a #hashtag do evento (letras, números e _, sem espaço).");
     check(await themeOk(e.theme), "Escolha um tema para o evento (o tema personalizado escolhido não existe mais).");
     check(e.copiesPerSession >= 1 && e.copiesPerSession <= 2, "Cópias a cada impressão: 1 ou 2.");
+    const bgs = e.backgrounds ?? [];
+    check(bgs.length <= 8 && new Set(bgs).size === bgs.length && bgs.every(b => /^fundo-[0-9-]{1,40}\.(jpg|png)$/.test(b) && exists(`eventos/fundos/${b}`)),
+      "Fundos da foto: até 8, e todos precisam existir (adicione de novo o que sumiu).");
     check(e.layouts.length <= 8 && new Set(e.layouts).size === e.layouts.length, "Escolha até 8 layouts diferentes.");
     for (const id of e.layouts) {
       check(ID.test(id) && exists(libLayout(id)), "Um dos layouts escolhidos não existe mais.");
@@ -222,7 +225,7 @@ document.body.classList.add("panel", "web");
 
   async function saveEvent(e) {
     const t = s => (s ?? "").trim();
-    const clean = { ...e, name: t(e.name), client: t(e.client), place: t(e.place), phrase: t(e.phrase), layouts: e.layouts ?? [],
+    const clean = { ...e, name: t(e.name), client: t(e.client), place: t(e.place), phrase: t(e.phrase), layouts: e.layouts ?? [], backgrounds: e.backgrounds ?? [],
       hashtag: t(e.hashtag).replace(/^#+/, "").toLowerCase(),
       phrases: Object.fromEntries(Object.entries({ ...PHRASES, ...(e.phrases ?? {}) }).map(([k, v]) => [k, t(v)])) };
     clean.defaultLayout = clean.layouts.length ? clean.defaultLayout ?? clean.layouts[0] : null;
@@ -514,9 +517,18 @@ document.body.classList.add("panel", "web");
       case "countdown": case "sessionTimes": await saveTimes(m); return sendState();
 
       case "events.list": return sendEvents();
+      case "events.pickBackground": { // troca de fundo com IA: a imagem vai para eventos/fundos (sincroniza com os PCs)
+        const file = await pickFile("image/jpeg,image/png");
+        if (!file) return;
+        const ext = { ".jpg": ".jpg", ".jpeg": ".jpg", ".png": ".png" }[extOf(file.name)] ?? fail("Use uma imagem JPG ou PNG.");
+        check(file.size <= 20 * 1024 * 1024, "Imagem grande demais (máx. 20 MB).");
+        const name = `fundo-${stamp()}${ext}`;
+        await put("eventos/fundos/" + name, new Uint8Array(await file.arrayBuffer()));
+        return out({ type: "backgroundAdded", name });
+      }
       case "events.new":
         return out({ type: "eventOpen", event: { id: newId("e"), name: "", date: today(), client: "", place: "", product: "totem", layouts: [], defaultLayout: null,
-          print: true, copiesPerSession: 1, closed: false, phrase: PHRASE, phrases: PHRASES, theme: "visualize", activeSeconds: 0, passwordHash: null, hashtag: "", updated: now() } });
+          print: true, copiesPerSession: 1, backgrounds: [], closed: false, phrase: PHRASE, phrases: PHRASES, theme: "visualize", activeSeconds: 0, passwordHash: null, hashtag: "", updated: now() } });
       case "events.open": return out({ type: "eventOpen", event: masked(await json(evPath(m.id))) });
       case "events.save": {
         const saved = await saveFromForm(m);
