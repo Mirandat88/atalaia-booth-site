@@ -157,6 +157,7 @@
     $("efHashtag").value = ev.hashtag ?? "";
     toggle("efPrint", ev.print, v => { ev.print = v; renderForm(); });
     $("efPrintRows").hidden = !ev.print;
+    ev.copiesPerSession = Math.min(2, ev.copiesPerSession); // eventos antigos podiam ter 3
     segment("efCopies", String(ev.copiesPerSession), v => (ev.copiesPerSession = +v));
     renderPhrases();
     renderThemes();

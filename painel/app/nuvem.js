@@ -209,7 +209,7 @@ document.body.classList.add("panel", "web");
     check(PRODUCTS.includes(e.product), "Escolha o produto: Totem, Cabine de Fotos, Espelho Mágico ou InstaPrint.");
     check(e.product !== "instaprint" || /^[\p{L}\p{N}_]{2,100}$/u.test(e.hashtag), "InstaPrint: escreva a #hashtag do evento (letras, números e _, sem espaço).");
     check(await themeOk(e.theme), "Escolha um tema para o evento (o tema personalizado escolhido não existe mais).");
-    check(e.copiesPerSession >= 1 && e.copiesPerSession <= 3, "Cópias a cada impressão: de 1 a 3.");
+    check(e.copiesPerSession >= 1 && e.copiesPerSession <= 2, "Cópias a cada impressão: 1 ou 2.");
     check(e.layouts.length <= 8 && new Set(e.layouts).size === e.layouts.length, "Escolha até 8 layouts diferentes.");
     for (const id of e.layouts) {
       check(ID.test(id) && exists(libLayout(id)), "Um dos layouts escolhidos não existe mais.");

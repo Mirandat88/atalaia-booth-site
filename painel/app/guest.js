@@ -241,11 +241,11 @@
   // ----- cópias (1 a 3), no canto de cima da tela “como ficou”; começa nas cópias do evento -----
   let copies = 1;
   function pickCopies(k) {
-    copies = Math.min(3, Math.max(1, k));
+    copies = Math.min(2, Math.max(1, k));
     $("runCopiesN").textContent = copies;
     $("runCopiesL").textContent = copies > 1 ? "cópias" : "cópia";
     const [less, more] = $("runCopies").querySelectorAll("button");
-    less.disabled = copies === 1; more.disabled = copies === 3;
+    less.disabled = copies === 1; more.disabled = copies === 2;
   }
   $("runCopies").onclick = e => { e.stopPropagation(); const b = e.target.closest("button"); if (b) pickCopies(copies + +b.dataset.d); };
 
@@ -273,7 +273,7 @@
     $("runEvName").textContent = ev.name;
     $("runEvDate").textContent = ev.date ? ev.date.split("-").reverse().join("/") : "";
     clock();
-    copies = Math.min(3, Math.max(1, ev.copiesPerSession ?? 1));
+    copies = Math.min(2, Math.max(1, ev.copiesPerSession ?? 1));
     const ph = ev.phrases ?? {};
     try {
       // vários layouts: o convidado escolhe (o padrão aparece primeiro)

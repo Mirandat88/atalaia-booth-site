@@ -27,7 +27,7 @@
     $("galGrid").hidden = !!item;
     if (!item) return;
     $("galImg").src = item.url;
-    copies = Math.min(3, Math.max(1, ev.copiesPerSession || 1));
+    copies = Math.min(2, Math.max(1, ev.copiesPerSession || 1));
     $("galCopies").textContent = copies;
     $("galPrintRow").hidden = !ev.print;
   }
