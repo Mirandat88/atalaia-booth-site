@@ -1,0 +1,26 @@
+# Consulta a nuvem (Supabase) a cada 2 dias para o plano grátis não pausar o projeto por falta de uso (pausa após 7 dias).
+# Se a consulta falhar (nuvem pausada ou fora do ar), a execução falha e o GitHub avisa por e-mail.
+# shortcut: em repositório público o GitHub desliga agendamentos após 60 dias sem nenhum commit; cada publicação do painel
+# já conta, e o GitHub manda e-mail antes de desligar. Se o repositório ficar parado, reative em Actions.
+name: Manter a nuvem ativa
+on:
+  schedule:
+    - cron: "17 12 */2 * *"
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: painel-fonte/nuvem.js
+      - name: Consultar a nuvem
+        run: |
+          # endereço e chave pública vêm do painel, para não ficarem copiados em dois lugares
+          url=$(grep -o 'https://[a-z0-9]*\.supabase\.co' painel-fonte/nuvem.js | head -1)
+          key=$(grep -o 'sb_publishable_[A-Za-z0-9_-]*' painel-fonte/nuvem.js | head -1)
+          code=$(curl -s -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 20 \
+            -H "apikey: $key" "$url/rest/v1/arquivos?select=caminho&limit=1")
+          echo "Resposta da nuvem: $code"
+          test "$code" = 200
