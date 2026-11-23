@@ -1,11 +1,12 @@
-# Consulta a nuvem (Supabase) a cada 2 dias para o plano grátis não pausar o projeto por falta de uso (pausa após 7 dias).
+# Consulta a nuvem (Supabase) 3 vezes por dia para o plano grátis não pausar o projeto por falta de uso. A cada 2 dias não bastou:
+# em 23/11/2026 o Supabase avisou que ia pausar (ele pede "algumas consultas por dia" e não diz o mínimo).
 # Se a consulta falhar (nuvem pausada ou fora do ar), a execução falha e o GitHub avisa por e-mail.
 # shortcut: em repositório público o GitHub desliga agendamentos após 60 dias sem nenhum commit; cada publicação do painel
 # já conta, e o GitHub manda e-mail antes de desligar. Se o repositório ficar parado, reative em Actions.
 name: Manter a nuvem ativa
 on:
   schedule:
-    - cron: "17 12 */2 * *"
+    - cron: "17 3,11,19 * * *"
   workflow_dispatch:
 jobs:
   ping:
